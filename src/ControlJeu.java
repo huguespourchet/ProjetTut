@@ -1,20 +1,15 @@
 public class ControlJeu {
 
-    private int niveau;
-    private int temps;
-    private Grille grille;
-    private int x;
-    private int y;
 
-    public Tetrimino genererPiece(){
+/*    public Tetrimino genererPiece(){
         //prend le tableau de tetriminos et choisit au hasard une pièce
         return this.model.getTetrimino(Math.random()*this.model.getTailleTableauTetrmino());
-    }
+    }*/
 
-    //a mettre dans modele jeu
+    /*//a mettre dans modele jeu
     public void stockerPiece(Tetrimino tetrimino) {
         this.setStockerPiece(tetrimino);
-    }
+    }*/
 
     public void descendrePiece() {
         //récupérer le tertrimono
