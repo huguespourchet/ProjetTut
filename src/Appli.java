@@ -4,7 +4,11 @@ public class Appli {
             @Override
             public void run() {
                 Plateau plateau = new Plateau();
-                ControlGroup control = new ControlGroup(plateau);
+                try {
+                    ControlGroup control = new ControlGroup();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
             }
         });

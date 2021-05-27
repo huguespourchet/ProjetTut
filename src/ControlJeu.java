@@ -1,5 +1,12 @@
 public class ControlJeu {
 
+    private int[][] pieceInstant;
+    private Jeu j;
+
+    public ControlJeu(Jeu j) throws InterruptedException {
+        this.pieceInstant = new int[4][2];
+        this.j = j;
+    }
 
 /*    public Tetrimino genererPiece(){
         //prend le tableau de tetriminos et choisit au hasard une pièce
@@ -12,19 +19,30 @@ public class ControlJeu {
     }*/
 
     public void descendrePiece() {
-        //récupérer le tertrimono
-        //+1 ligne à toutes les coordonnées du tetriminos
-        y = this.model.getX();
-        if(!isBas()) {
-            this.model.setX(x++);
-            //fonction qui affiche la grille et les pièces à leurs emplacements et couleurs
-            this.jeu.refreshGrille();
-        }else{
-            this.model.setTetriminoInstantane(null);
+        this.pieceInstant = this.j.getPiece();
+        if(!this.isBloqueBas()){
+            for(int i=0;i<4;i++) {
+                this.pieceInstant[i][0] += 1;
+            }
+            this.j.rafraichirGrille();
+            this.j.setPiece(this.pieceInstant);
         }
     }
 
-    public void moveGauche() {
+    private boolean isBloqueBas() {
+        boolean res = false;
+        for(int i=0;i<4;i++) {
+            //verification sur la ligne suivante
+            int ligne = this.pieceInstant[i][0]+1;
+            int colonne = this.pieceInstant[i][1];
+            if(this.j.getGrille()[ligne][colonne] != 0 && this.j.getGrille()[ligne][colonne] != 2){
+                res = true;
+            }
+        }
+        return res;
+    }
+
+   /* public void moveGauche() {
         //récupérer le tertrimono
         if(!this.isMurGauche()) {
             this.model.setY(this.model.getY()-1);
@@ -88,5 +106,5 @@ public class ControlJeu {
     }
 
     //trouver comment réupérer les coordonnées d'une piece dans la grille
-
+*/
 }
