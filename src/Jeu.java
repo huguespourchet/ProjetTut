@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public class Jeu {
     private int[][] grille;
     private int[][] piece;
@@ -40,7 +42,12 @@ public class Jeu {
         }
         for(int i=0;i<10;i++) {
             for (int j = 0; j < 15; j++) {
-                System.out.print(this.grille[i][j]);
+                if(this.grille[i][j] == 2)
+                    System.out.print((char)27 + "[31m" + this.grille[i][j]);
+                else if(this.grille[i][j] == 9)
+                    System.out.print((char)27 + "[33m" + this.grille[i][j]);
+                else
+                    System.out.print((char)27 + "[37m" + this.grille[i][j]);
                 System.out.print(" ");
             }
             System.out.println();
