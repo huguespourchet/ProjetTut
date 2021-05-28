@@ -8,17 +8,21 @@ public class ControlJeu {
         this.j = j;
     }
 
-/*    public Tetrimino genererPiece(){
+    public int[][] genererPiece(){
         //prend le tableau de tetriminos et choisit au hasard une pièce
-        return this.model.getTetrimino(Math.random()*this.model.getTailleTableauTetrmino());
-    }*/
+        //return this.Tetrimino.getTetrimino(Math.random()*this.model.getTailleTableauTetrmino());
+        //return de test en attendant les class nécessaires
+        int [][] res = new int[][] {
+                {1, 4},
+                {1, 5},
+                {2, 4},
+                {2, 5}
+        };
+        return res;
+    }
 
-    /*//a mettre dans modele jeu
-    public void stockerPiece(Tetrimino tetrimino) {
-        this.setStockerPiece(tetrimino);
-    }*/
 
-    public void descendrePiece() {
+    public void descendrePiece() throws InterruptedException {
         this.pieceInstant = this.j.getPiece();
         if(!this.isBloqueBas()){
             for(int i=0;i<4;i++) {
@@ -29,7 +33,7 @@ public class ControlJeu {
         }
     }
 
-    private boolean isBloqueBas() {
+    private boolean isBloqueBas() throws InterruptedException {
         boolean res = false;
         for(int i=0;i<4;i++) {
             //verification sur la ligne suivante
@@ -37,44 +41,68 @@ public class ControlJeu {
             int colonne = this.pieceInstant[i][1];
             if(this.j.getGrille()[ligne][colonne] != 0 && this.j.getGrille()[ligne][colonne] != 2){
                 res = true;
+                this.j.bloquerPiece();
             }
         }
         return res;
     }
 
-   /* public void moveGauche() {
-        //récupérer le tertrimono
-        if(!this.isMurGauche()) {
-            this.model.setY(this.model.getY()-1);
+    public void moveGauche() {
+        this.pieceInstant = this.j.getPiece();
+        if(!this.isMurGauche()){
+            for(int i=0;i<4;i++) {
+                this.pieceInstant[i][1] -= 1;
+            }
+            this.j.rafraichirGrille();
+            this.j.setPiece(this.pieceInstant);
         }
-        this.jeu.refreshGrille();
+    }
+    public boolean isMurGauche(){
+        boolean res = false;
+        for(int i=0;i<4;i++) {
+            //verification sur la colonne précédente
+            int ligne = this.pieceInstant[i][0];
+            int colonne = this.pieceInstant[i][1]-1;
+            if(this.j.getGrille()[ligne][colonne] != 0 && this.j.getGrille()[ligne][colonne] != 2){
+                res = true;
+            }
+        }
+        return res;
     }
     public void moveDroite() {
-        //récupérer le tertrimono
-        if(!isMurDroite()) {
-            this.model.setY(this.model.getY()+1);
+        this.pieceInstant = this.j.getPiece();
+        if(!this.isMurDroite()){
+            for(int i=0;i<4;i++) {
+                this.pieceInstant[i][1] += 1;
+            }
+            this.j.rafraichirGrille();
+            this.j.setPiece(this.pieceInstant);
         }
-        this.jeu.refreshGrille();
+    }
+    public boolean isMurDroite() {
+        boolean res = false;
+        for(int i=0;i<4;i++) {
+            //verification sur la colonne précédente
+            int ligne = this.pieceInstant[i][0];
+            int colonne = this.pieceInstant[i][1]+1;
+            if(this.j.getGrille()[ligne][colonne] != 0 && this.j.getGrille()[ligne][colonne] != 2){
+                res = true;
+            }
+        }
+        return res;
     }
 
 
-    public void augmenterPoints(int nbrLignesDetruites){
+    /*public void augmenterPoints(int nbrLignesDetruites){
         this.model.addPoints(nbrLignesDetruites);
 
     }
-    public boolean isMurGauche(){
 
-    }
-    public boolean isMurDroite() {
-        //meme chose mais vérifier si mlur à doirte
-    }
-    public boolean isBas() {
-        //vérifier si une case d'une ligne en dessous du tetrimmino est différent de 0
-    }
+
+*/
     public boolean isLigneComplete(int ligne){
-        Grille grille = this.model.getGrille();
-        for(int i=0; i<grille.nbrColones; i++) {
-            if(grille[ligne][i] == 0){
+        for(int i=0; i<15; i++) {
+            if(this.j.getGrille()[ligne][i] == 0){
                 return false;
             }
         }
@@ -82,29 +110,19 @@ public class ControlJeu {
     }
     public int nbrLignesCompletes(){
         int lignes =0;
-        for(int i=grille.getNbrLignes();i>grille.getNbrLignes()-4; i--){
+        for(int i=9;i>9-4; i--){
             if(isLigneComplete(i)) {
                 lignes++;
             }
         }
         return lignes;
     }
+    /*
     public boolean isPieceStockee() {
         return !(this.getStockerPiece() == null);
     }
     public boolean isPieceStockeeDejaAppelee(){
         return this.model.getUtiliserPiece();
-    }
-    public boolean isPerdu() {
-        Grille grille = this.model.getGrille();
-        for(int i=0; i<grille.nbrColonnes(); i++){
-            if(grille[0][i] == 1) {
-                return true;
-            }
-        }
-        return false;
-    }
+    }*/
 
-    //trouver comment réupérer les coordonnées d'une piece dans la grille
-*/
 }
