@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Classe permettant de simuler la vue console du tetris pour les tests.
@@ -39,6 +40,7 @@ public class Jeu {
             Thread.sleep(500);
             if(this.cj.nbrLignesCompletes() != 0){
                 System.out.println("des lignes ont étées complétées!");
+                descendreGrille(this.cj.nbrLignesCompletes());
             }
             this.cj.descendrePiece();
             this.cj.moveDroite();
@@ -83,7 +85,7 @@ public class Jeu {
             }
         }
     }
-    //supprimer piece courante pour l'afficher ailleurs
+    //supprimer piece courante pour la déplacer
     public void rafraichirGrille() {
         for(int i=0;i<10;i++) {
             for (int j = 0; j < 15; j++) {
@@ -93,6 +95,7 @@ public class Jeu {
             }
         }
     }
+    //place la pièce définitivement
     public void bloquerPiece() {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 15; j++) {
@@ -110,6 +113,22 @@ public class Jeu {
             }
         }
     }
+    //descente de chaque pièce dans la grille
+    public void descendreGrille(int nbrLignes) {
+        for(int i=8;i>8-nbrLignes; i--) {
+            for (int j = 1; j < 14; j++) {
+                grille[i][j] = 0;
+            }
+        }
+        for (int i = 8-nbrLignes; i > 0; i--) {
+            for (int j = 13; j > 0; j--) {
+                if(grille[i][j] == 1){
+                    grille[i-nbrLignes][j] = 1;
+                    grille[i][j] = 0;
+                }
+            }
+        }
+    }
 
     public int[][] getPiece() {
         return piece;
@@ -122,4 +141,9 @@ public class Jeu {
     public int[][] getGrille() {
         return grille;
     }
+
+    public void setGrille(int[][] grille) {
+        this.grille = grille;
+    }
+
 }

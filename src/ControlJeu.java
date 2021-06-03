@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class ControlJeu {
 
     private int[][] pieceInstant;
@@ -100,7 +102,7 @@ public class ControlJeu {
 
 
 */
-    public boolean isLigneComplete(int ligne){
+    private boolean isLigneComplete(int ligne){
         for(int i=0; i<15; i++) {
             if(this.j.getGrille()[ligne][i] == 0){
                 return false;
@@ -110,19 +112,27 @@ public class ControlJeu {
     }
     public int nbrLignesCompletes(){
         int lignes =0;
-        for(int i=9;i>9-4; i--){
+        for(int i=8;i>8-4; i--){
             if(isLigneComplete(i)) {
                 lignes++;
             }
         }
         return lignes;
     }
+
+
     /*
     public boolean isPieceStockee() {
         return !(this.getStockerPiece() == null);
     }
     public boolean isPieceStockeeDejaAppelee(){
         return this.model.getUtiliserPiece();
+    }*/
+
+/*    public void utiliserPieceStockee() {
+        int[][] pieceCourante = this.model.getPieceStockee();
+        this.model.setPieceStockee(this.model.getPieceInstantanee());
+        this.model.setPieceInstantanee(pieceCourante);
     }*/
 
 }
