@@ -1,51 +1,26 @@
-import java.util.Arrays;
-
 public class ControlJeu {
 
     private int[][] pieceInstant;
-    private Model model;
+    private Jeu j;
 
-    public ControlJeu(Model model) throws InterruptedException {
-        //initialisation de la taille du tableau contenant le tetrimino qui descend
+    public ControlJeu(Jeu j) throws InterruptedException {
         this.pieceInstant = new int[4][2];
-        this.model = model;
+        this.j = j;
     }
 
     public int[][] genererPiece(){
         //prend le tableau de tetriminos et choisit au hasard une pièce
         //return this.Tetrimino.getTetrimino(Math.random()*this.model.getTailleTableauTetrmino());
         //return de test en attendant les class nécessaires
-
+        int [][] res = new int[][] {
+                {1, 4},
+                {1, 5},
+                {2, 4},
+                {2, 5}
+        };
+        return res;
     }
 
-    public void tournerPiece() {
-        if(this.model.getIndiceY() == 3)
-            this.model.setIndiceY(0);
-        else
-            this.model.setIndiceY(this.model.getIndiceY()+1);
-        int[][] newPiece = this.model.getTetrimino(this.model.getIndiceX(),this.model.getIndiceY());
-        for(int i=0; i<4;i++){
-            newPiece[i][0] += this.model.getBas();
-            newPiece[i][1] += this.model.getLateral();
-        }
-        //verification que la pièce tournée n'est pas obstruée, sinon on la remonte ou la déplace latéralement
-        for(int indice=0;indice<4;indice++) {
-            if (this.model.getGrille()[newPiece[indice][0]][newPiece[indice][1]] == 1 || newPiece[indice][0]>=this.model.TAILLE_LIGNES-1) {
-                for (int j = 0; j < 4; j++) {
-                    newPiece[j][0]--;
-                }
-            }
-            if(this.model.getGrille()[newPiece[indice][0]][newPiece[indice][1]] == 9 || newPiece[indice][1]<=0 || newPiece[indice][1]>=this.model.TAILLE_COLONNES-1){
-                for (int j = 0; j < 4; j++) {
-                    if(this.model.getLateral()<0)
-                        newPiece[j][1]++;
-                    else
-                        newPiece[j][1]--;
-                }
-            }
-        }
-        this.model.setTetriminoInstantane(newPiece);
-    }
 
     public void descendrePiece() throws InterruptedException {
         this.pieceInstant = this.j.getPiece();
@@ -56,7 +31,6 @@ public class ControlJeu {
             this.j.rafraichirGrille();
             this.j.setPiece(this.pieceInstant);
         }
-        this.model.setBas(this.model.getBas()++);
     }
 
     private boolean isBloqueBas() throws InterruptedException {
@@ -121,10 +95,7 @@ public class ControlJeu {
 
     /*public void augmenterPoints(int nbrLignesDetruites){
         this.model.addPoints(nbrLignesDetruites);
-
     }
-
-
 */
     private boolean isLigneComplete(int ligne){
         for(int i=0; i<15; i++) {

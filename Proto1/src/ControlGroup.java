@@ -6,17 +6,17 @@ public class ControlGroup {
     public ControlBouton controlButton;
     public ControlMenu controlMenu;
     private ControlJeu controlJeu;
-    private Model model;
-    private Grille grille;
 
-    public ControlGroup() throws InterruptedException {
+    public ControlGroup(Plateau plateau) throws InterruptedException{
 
-        this.model = new Model();
-        this.plateau = new Plateau();
+        this.plateau = plateau;
         this.fenetre = new Fenetre(plateau);
-        this.controlJeu = new ControlJeu(model);
+
+        this.jeu = new Jeu();
+        this.controlJeu = new ControlJeu(this.jeu);
         this.controlButton = new ControlBouton(plateau,fenetre);
         this.controlMenu = new ControlMenu(fenetre);
+
         fenetre.display();
     }
 }
