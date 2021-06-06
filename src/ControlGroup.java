@@ -7,12 +7,11 @@ public class ControlGroup {
     public ControlMenu controlMenu;
     private ControlJeu controlJeu;
     private Model model;
-    private Grille grille;
 
     public ControlGroup() throws InterruptedException {
 
         this.model = new Model();
-        this.plateau = new Plateau();
+        this.plateau = new Plateau(model);
         this.fenetre = new Fenetre(plateau);
         this.controlJeu = new ControlJeu(model);
         this.controlButton = new ControlBouton(plateau,fenetre);

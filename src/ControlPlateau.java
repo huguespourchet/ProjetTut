@@ -2,75 +2,75 @@ import java.util.Arrays;
 
 public class ControlJeu {
 
-    private int[][] pieceInstant;
     private Model model;
 
     public ControlJeu(Model model) throws InterruptedException {
         //initialisation de la taille du tableau contenant le tetrimino qui descend
-        this.pieceInstant = new int[4][2];
         this.model = model;
     }
-
-    public int[][] genererPiece(){
-        //prend le tableau de tetriminos et choisit au hasard une pièce
-        //return this.Tetrimino.getTetrimino(Math.random()*this.model.getTailleTableauTetrmino());
-        //return de test en attendant les class nécessaires
-
+    private void play() throws InterruptedException {
+        int x;
+        int y;
+        for (int i = 0; i < 4; i++) {
+            x = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
+            y = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
+        //placer piece sur la grille avec coordonnes x et y
+        }
+        while (!this.model.getPerdu()) {
+            Thread.sleep(this.model.getVitesse());
+            if (this.nbrLignesCompletes() != 0) {
+                this.descendreGrille(this.nbrLignesCompletes());
+            }
+            this.descendrePiece();
+        }
+        //perdu
     }
 
-    public void tournerPiece() {
-        if(this.model.getIndiceY() == 3)
-            this.model.setIndiceY(0);
-        else
-            this.model.setIndiceY(this.model.getIndiceY()+1);
-        int[][] newPiece = this.model.getTetrimino(this.model.getIndiceX(),this.model.getIndiceY());
-        for(int i=0; i<4;i++){
-            newPiece[i][0] += this.model.getBas();
-            newPiece[i][1] += this.model.getLateral();
+    private void descendreGrille(int nbrLignesCompletes) {
+        for (int i = this.model.TAILLE_LIGNES-1; i > this.model.TAILLE_LIGNES-1 - 4; i--) {
+            for (int j = 1; j < this.model.TAILLE_COLONNES; j++) {
+                this.model.getPlateau().getGrille()[i][j] = 0;
+            }
         }
-        //verification que la pièce tournée n'est pas obstruée, sinon on la remonte ou la déplace latéralement
-        for(int indice=0;indice<4;indice++) {
-            if (this.model.getGrille()[newPiece[indice][0]][newPiece[indice][1]] == 1 || newPiece[indice][0]>=this.model.TAILLE_LIGNES-1) {
-                for (int j = 0; j < 4; j++) {
-                    newPiece[j][0]--;
+        for (int i = 8 - this.model.TAILLE_LIGNES; i > 0; i--) {
+            for (int j = 13; j > 0; j--) {
+                if (this.model.getPlateau().getGrille()[i][j] == 1) {
+                    this.model.getPlateau().getGrille()[i - this.model.TAILLE_LIGNES][j] = 1;
+                    this.model.getPlateau().getGrille()[i][j] = 0;
                 }
             }
-            if(this.model.getGrille()[newPiece[indice][0]][newPiece[indice][1]] == 9 || newPiece[indice][1]<=0 || newPiece[indice][1]>=this.model.TAILLE_COLONNES-1){
-                for (int j = 0; j < 4; j++) {
-                    if(this.model.getLateral()<0)
-                        newPiece[j][1]++;
-                    else
-                        newPiece[j][1]--;
+        }
+    }
+
+
+    public void descendrePiece() {
+        if(!isBloqueBas()) {
+            int[][] tetri = new int[4][2];
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 2; j++) {
+                    tetri[i][j] = this.model.getPieceInstantanee().getCoordsTetrimino()[i + 1][j];
                 }
             }
+            this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
         }
-        this.model.setTetriminoInstantane(newPiece);
     }
 
-    public void descendrePiece() throws InterruptedException {
-        this.pieceInstant = this.j.getPiece();
-        if(!this.isBloqueBas()){
-            for(int i=0;i<4;i++) {
-                this.pieceInstant[i][0] += 1;
-            }
-            this.j.rafraichirGrille();
-            this.j.setPiece(this.pieceInstant);
-        }
-        this.model.setBas(this.model.getBas()++);
-    }
-
-    private boolean isBloqueBas() throws InterruptedException {
+    private boolean isBloqueBas() {
         boolean res = false;
         for(int i=0;i<4;i++) {
             //verification sur la ligne suivante
-            int ligne = this.pieceInstant[i][0]+1;
-            int colonne = this.pieceInstant[i][1];
-            if(this.j.getGrille()[ligne][colonne] != 0 && this.j.getGrille()[ligne][colonne] != 2){
+            int ligne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]+1;
+            int colonne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
+            if(this.model.getPlateau().getGrille()[ligne][colonne] != 0 && this.model.getPlateau().getGrille()[ligne][colonne] != 2){
                 res = true;
-                this.j.bloquerPiece();
+                this.bloquerPiece();
             }
         }
         return res;
+    }
+
+    private void bloquerPiece() {
+
     }
 
     public void moveGauche() {
