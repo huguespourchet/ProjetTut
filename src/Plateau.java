@@ -22,7 +22,7 @@ public class Plateau extends JPanel {
 
     public void initPlateau(){
         setFocusable(true);
- /*       addKeyListener(new TAdapter());*/
+        addKeyListener(new TAdapter());
     }
 
     //à utiliser pour dessiner un carré
@@ -48,7 +48,8 @@ public class Plateau extends JPanel {
                 if(this.model.getGrille()[i][j] != 0) {
                     g.setColor(this.model.getColor()[this.model.getGrille()[i][j]]);
                 }else{
-                    g.setColor(this.model.getColor()[0]);
+                    //si on laissait le blanc à 0, cela aurait été plus compliqué à gérer avec la pièce d'indice 0 qui aurait eu une couleur blanche
+                    g.setColor(this.model.getColor()[7]);
                 }
                 drawSquare(g, j * getSquareWidth(),
                         top + i * squareHeight());
@@ -67,8 +68,6 @@ public class Plateau extends JPanel {
             y = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
         }
         fen.repaint();
-/*        Chrono timer = new Chrono(this.model.getVitesse());
-        timer.start();*/
         Timer timer = new Timer(this.model.getVitesse(), new GameCycle());
         timer.start();
     }
@@ -102,32 +101,28 @@ public class Plateau extends JPanel {
         }
     }
 
+    public void pause() {
+        this.model.setPause(!this.model.isPause());
+        //afficher pause
+    }
 
-    /*
     class TAdapter extends KeyAdapter {
 
         @Override
         public void keyPressed(KeyEvent e) {
-
-            if (pieceCourrante.getType() == Tetrimino.TypeTetrimino.Vide) {
-
-                return;
-            }
-
             int keycode = e.getKeyCode();
 
-            // Java 12 switch expressions
             switch (keycode) {
-                case KeyEvent.VK_P -> pause();
-                case KeyEvent.VK_LEFT -> tryMove(pieceCourrante, curX - 1, curY);
-                case KeyEvent.VK_RIGHT -> tryMove(pieceCourrante, curX + 1, curY);
-                case KeyEvent.VK_DOWN -> tryMove(pieceCourrante.rotationDroite(), curX, curY);
+                case KeyEvent.VK_P: Plateau.this.pause();
+                case KeyEvent.VK_LEFT: Plateau.this.controlPlateau.moveGauche();
+                case KeyEvent.VK_RIGHT: Plateau.this.controlPlateau.moveDroite();
+                case KeyEvent.VK_DOWN: Plateau.this.controlPlateau.descendrePiece();
+                /*
                 case KeyEvent.VK_UP -> tryMove(pieceCourrante.rotationGauche(), curX, curY);
                 case KeyEvent.VK_SPACE -> dropDown();
-                case KeyEvent.VK_D -> oneLineDown();
+                case KeyEvent.VK_D -> oneLineDown();*/
             }
         }
     }
-*/
 
 }

@@ -49,7 +49,6 @@ public class ControlPlateau {
             if(ligne >= this.model.TAILLE_LIGNES || (this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != this.model.getPieceInstantanee().getIndice())){
                 res = true;
                 this.bloquerPiece();
-                System.out.println();
             }
         }
         return res;
@@ -63,11 +62,14 @@ public class ControlPlateau {
 
     public void moveGauche() {
         if(!isMurGauche()) {
+            int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
             int[][] tetri = new int[4][2];
             for (int i = 0; i < 4; i++) {
                 tetri[i][0] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
                 tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]-1;
+                grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = 0;
             }
+            this.model.setGrille(grillecopy);
             this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
         }
     }
@@ -77,21 +79,24 @@ public class ControlPlateau {
             //verification sur la ligne suivante
             int ligne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
             int colonne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]-1;
-            if(this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != 2){
+            if(ligne >= this.model.TAILLE_COLONNES || (this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != this.model.getPieceInstantanee().getIndice())){
                 res = true;
-                this.bloquerPiece();
             }
         }
         return res;
     }
-    public void moveDroite() {if(!isBloqueBas()) {
-        int[][] tetri = new int[4][2];
-        for (int i = 0; i < 4; i++) {
-            tetri[i][0] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
-            tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]+1;
+    public void moveDroite() {
+        if (!isMurDroite()) {
+            int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+            int[][] tetri = new int[4][2];
+            for (int i = 0; i < 4; i++) {
+                tetri[i][0] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
+                tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]+1;
+                grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = 0;
+            }
+            this.model.setGrille(grillecopy);
+            this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
         }
-        this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
-    }
     }
     public boolean isMurDroite() {
         boolean res = false;
@@ -99,14 +104,12 @@ public class ControlPlateau {
             //verification sur la ligne suivante
             int ligne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
             int colonne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]+1;
-            if(this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != 2){
+            if(ligne >= this.model.TAILLE_COLONNES || (this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != this.model.getPieceInstantanee().getIndice())){
                 res = true;
-                this.bloquerPiece();
             }
         }
         return res;
     }
-
 
     public void augmenterPoints(int nbrLignesDetruites){
         this.model.addPoints(nbrLignesDetruites);

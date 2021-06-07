@@ -45,13 +45,14 @@ public class Model {
         this.basDepart = 2;
         this.lateraldepart = (int)TAILLE_COLONNES/2;
         this.perdu = false;
-        this.vitesse = 400;
+        this.vitesse = 500;
         this.isPause = false;
         this.points = 0;
-        this.color = new Color[]{new Color(255, 255, 255), new Color(222, 99, 99),
+        this.color = new Color[]{new Color(222, 99, 99),
                 new Color(99, 222, 99), new Color(99, 99, 222),
                 new Color(222, 222, 99), new Color(222, 99, 222),
-                new Color(99, 222, 222), new Color(222, 166, 0)
+                new Color(99, 222, 222), new Color(222, 166, 0),
+                new Color(255, 255, 255)
         };
     }
 
