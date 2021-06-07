@@ -2,10 +2,10 @@ import javax.swing.*;
 import java.text.DecimalFormat;
 
 public class Chrono extends Thread {
-    JLabel temps;
+    private int temps;
     boolean demarre;
 
-    Chrono(JLabel temps ){
+    Chrono(int temps){
         this.temps=temps;
     }
 
@@ -15,12 +15,15 @@ public class Chrono extends Thread {
 
         while (demarre) {
             try{
-                this.sleep(100);
+                this.sleep(temps);
+
                 t+=0.1;
                 //System.out.println(t);
                 DecimalFormat df = new DecimalFormat("#######0.0");
                 String str = df.format(t);
+/*
                 temps.setText(str);
+*/
             }
             catch(InterruptedException e){
 

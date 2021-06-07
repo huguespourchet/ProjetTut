@@ -4,6 +4,7 @@ public class Tetrimino {
 
     private int[][] coordsTetrimino;
     private int[][][] coordsTable;
+    private int indice;
 
 
     public Tetrimino(){
@@ -19,8 +20,13 @@ public class Tetrimino {
         initCoordTetrimino();
     }
 
+    public Tetrimino(Tetrimino t){
+        this.coordsTetrimino = t.coordsTetrimino;
+    }
+
     public void initCoordTetrimino(){
-        int indice = (int)Math.random()*7;
+        this.indice = (int)(Math.random()*7);
+        this.coordsTetrimino = new int[4][2];
         for(int i=0;i<4;i++){
             for(int j=0;j<2;j++){
                 this.coordsTetrimino[i][j] = this.coordsTable[indice][i][j];
@@ -58,10 +64,7 @@ public class Tetrimino {
     }
     // Rotation Gauche
     public Tetrimino rotationGauche() {
-        if (type == TypeTetrimino.O)
-            return this;
         Tetrimino result = new Tetrimino();
-        result.type = type;
         for (int i = 0; i < 4; ++i) {
             result.setX(i, y(i));
             result.setY(i, -x(i));
@@ -70,8 +73,6 @@ public class Tetrimino {
     }
     // Rotation Droite
     public Tetrimino rotationDroite() {
-        if (type == TypeTetrimino.O)
-            return this;
         Tetrimino result = new Tetrimino();
         for (int i = 0; i < 4; ++i) {
             result.setX(i, -y(i));
@@ -90,5 +91,9 @@ public class Tetrimino {
 
     public void setCoordsTetrimino(int[][] coordsTetrimino) {
         this.coordsTetrimino = coordsTetrimino;
+    }
+
+    public int getIndice() {
+        return indice;
     }
 }
