@@ -27,34 +27,52 @@ public class ControlPlateau {
 
 
     public void descendrePiece() {
-        if(!isBloqueBas()) {
+        if(this.model.isLateralMouvement2()) {
+            if(this.model.isLateralMouvement())
+                this.model.setLateralMouvement(false);
+            else
+                this.model.setLateralMouvement2(false);
+            return;
+        }
+        if(!isBloqueBas()){
             int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
             int[][] tetri = new int[4][2];
             for (int i = 0; i < 4; i++) {
                 tetri[i][0] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]+1;
                 tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
                 grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = 0;
+
             }
-            this.model.setGrille(grillecopy);
             this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
-        }
+            this.model.setGrille(grillecopy);
+
+        }else
+            this.bloquerPiece();
     }
 
     private boolean isBloqueBas() {
-        boolean res = false;
         for(int i=0;i<4;i++) {
             //verification sur la ligne suivante
             int ligne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]+1;
             int colonne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
-            if(ligne >= this.model.TAILLE_LIGNES || (this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != this.model.getPieceInstantanee().getIndice())){
-                res = true;
-                this.bloquerPiece();
+            if(ligne >= this.model.TAILLE_LIGNES){
+                return true;
+            }
+            if(this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != 10){
+                return true;
             }
         }
-        return res;
+        return false;
     }
 
     private void bloquerPiece() {
+        int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+        for (int i = 0; i < 4; i++) {
+            int x = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
+            int y = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
+            grillecopy[x][y] = this.model.getPieceInstantanee().getIndice();
+        }
+        this.model.setGrille(grillecopy);
         Tetrimino tetrimino = new Tetrimino();
         this.model.setPieceInstantanee(tetrimino);
         this.model.initPiece();
@@ -66,24 +84,38 @@ public class ControlPlateau {
             int[][] tetri = new int[4][2];
             for (int i = 0; i < 4; i++) {
                 tetri[i][0] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
-                tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]-1;
+                tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]-2;
                 grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = 0;
             }
             this.model.setGrille(grillecopy);
             this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
         }
+        else {
+            int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+            int[][] tetri = new int[4][2];
+            for (int i = 0; i < 4; i++) {
+                tetri[i][0] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
+                tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1] - 1;
+                grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = 0;
+            }
+            this.model.setGrille(grillecopy);
+            this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
+        }
+        this.model.setLateralMouvement(true);
+        this.model.setLateralMouvement2(true);
     }
     public boolean isMurGauche(){
-        boolean res = false;
         for(int i=0;i<4;i++) {
             //verification sur la ligne suivante
             int ligne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
             int colonne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]-1;
-            if(ligne >= this.model.TAILLE_COLONNES || (this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != this.model.getPieceInstantanee().getIndice())){
-                res = true;
+            if(colonne == 0)
+                return true;
+            if(this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != 10){
+                return true;
             }
         }
-        return res;
+        return false;
     }
     public void moveDroite() {
         if (!isMurDroite()) {
@@ -97,18 +129,21 @@ public class ControlPlateau {
             this.model.setGrille(grillecopy);
             this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
         }
+        this.model.setLateralMouvement(true);
+        this.model.setLateralMouvement2(true);
     }
     public boolean isMurDroite() {
-        boolean res = false;
         for(int i=0;i<4;i++) {
             //verification sur la ligne suivante
             int ligne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
             int colonne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]+1;
-            if(ligne >= this.model.TAILLE_COLONNES || (this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != this.model.getPieceInstantanee().getIndice())){
-                res = true;
+            if(colonne >= this.model.TAILLE_COLONNES)
+                return true;
+            if(this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != 10){
+                return  true;
             }
         }
-        return res;
+        return false;
     }
 
     public void augmenterPoints(int nbrLignesDetruites){
@@ -135,6 +170,19 @@ public class ControlPlateau {
         return lignes;
     }
 
+    public void rotationPiece(){
+        if(!this.isBloqueBas()) {
+            int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+            int[][] tetri = new int[4][2];
+            for (int i = 0; i < 4; i++) {
+                tetri[i][0] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]-1;
+                tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
+                grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = 0;
+            }
+            this.model.setGrille(grillecopy);
+            this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
+        }
+    }
 
 
     public boolean isPieceStockee() {

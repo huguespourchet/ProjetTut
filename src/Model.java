@@ -14,6 +14,8 @@ public class Model {
     private Tetrimino pieceStockee;
     private boolean pieceStockeeAppelee;
     private Color[] color;
+    private boolean lateralMouvement;
+    private boolean lateralMouvement2;
 
     public Model(){
         initModel();
@@ -48,6 +50,8 @@ public class Model {
         this.vitesse = 500;
         this.isPause = false;
         this.points = 0;
+        this.lateralMouvement = false;
+        this.lateralMouvement2 = false;
         this.color = new Color[]{new Color(222, 99, 99),
                 new Color(99, 222, 99), new Color(99, 99, 222),
                 new Color(222, 222, 99), new Color(222, 99, 222),
@@ -150,5 +154,21 @@ public class Model {
 
     public void setGrille(int[][] grille) {
         this.grille = grille;
+    }
+
+    public boolean isLateralMouvement() {
+        return lateralMouvement;
+    }
+
+    public void setLateralMouvement(boolean lateralMouvement) {
+        this.lateralMouvement = lateralMouvement;
+    }
+
+    public boolean isLateralMouvement2() {
+        return lateralMouvement2;
+    }
+
+    public void setLateralMouvement2(boolean lateralMouvement2) {
+        this.lateralMouvement2 = lateralMouvement2;
     }
 }

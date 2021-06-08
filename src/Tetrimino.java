@@ -35,51 +35,16 @@ public class Tetrimino {
     }
 
 
-    private void setX(int index, int x) {
-        coordsTetrimino[index][0] = x;
-    }
-    private void setY(int index, int y) {
-        coordsTetrimino[index][1] = y;
-    }
-    public int x(int index) {
-        return coordsTetrimino[index][0];
-    }
-    public int y(int index) {
-        return coordsTetrimino[index][1];
-    }
 
-    public int minX() {
-        int m = coordsTetrimino[0][0];
-        for (int i = 0; i < 4; i++) {
-            m = Math.min(m, coordsTetrimino[i][0]);
-        }
-        return m;
-    }
-    public int minY() {
-        int m = coordsTetrimino[0][1];
-        for (int i = 0; i < 4; i++) {
-            m = Math.min(m, coordsTetrimino[i][1]);
-        }
-        return m;
-    }
-    // Rotation Gauche
-    public Tetrimino rotationGauche() {
-        Tetrimino result = new Tetrimino();
-        for (int i = 0; i < 4; ++i) {
-            result.setX(i, y(i));
-            result.setY(i, -x(i));
-        }
-        return result;
-    }
     // Rotation Droite
-    public Tetrimino rotationDroite() {
-        Tetrimino result = new Tetrimino();
-        for (int i = 0; i < 4; ++i) {
-            result.setX(i, -y(i));
-            result.setY(i, x(i));
-        }
-        return result;
-    }
+//    public Tetrimino rotationDroite() {
+//        Tetrimino result = new Tetrimino();
+//        for (int i = 0; i < 4; ++i) {
+//            result.setX(i, -y(i));
+//            result.setY(i, x(i));
+//        }
+//        return result;
+//    }
 
     public int[][] getCoordsTetrimino() {
         return coordsTetrimino;

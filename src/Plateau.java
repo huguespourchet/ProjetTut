@@ -44,9 +44,12 @@ public class Plateau extends JPanel {
         var size = getSize();
         int top = (int) size.getHeight() - this.model.TAILLE_LIGNES * squareHeight();
         for (int i = 0; i < this.model.TAILLE_LIGNES; i++) {
-            for (int j = 0; j < this.model.TAILLE_COLONNES; j++) {
+            for (int j = 1; j < this.model.TAILLE_COLONNES; j++) {
                 if(this.model.getGrille()[i][j] != 0) {
-                    g.setColor(this.model.getColor()[this.model.getGrille()[i][j]]);
+                    if(this.model.getGrille()[i][j]==10)
+                        g.setColor(this.model.getColor()[this.model.getPieceInstantanee().getIndice()]);
+                    else
+                        g.setColor(this.model.getColor()[this.model.getGrille()[i][j]]);
                 }else{
                     //si on laissait le blanc à 0, cela aurait été plus compliqué à gérer avec la pièce d'indice 0 qui aurait eu une couleur blanche
                     g.setColor(this.model.getColor()[7]);
@@ -86,7 +89,18 @@ public class Plateau extends JPanel {
     }
 
     private void update() {
-        if(!this.model.isPause() || !this.model.getPerdu()) {
+        if(model.isPause()){
+            int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+            for (int i = 0; i < 4; i++) {
+                int x = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
+                int y = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
+                grillecopy[x][y] = this.model.getPieceInstantanee().getIndice();
+            }
+            this.model.setGrille(grillecopy);
+            return;
+        }
+
+        else if(!this.model.getPerdu()) {
             if (this.controlPlateau.nbrLignesCompletes() != 0) {
                 this.controlPlateau.descendreGrille(this.controlPlateau.nbrLignesCompletes());
             }
@@ -95,11 +109,12 @@ public class Plateau extends JPanel {
             for (int i = 0; i < 4; i++) {
                 int x = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
                 int y = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
-                grillecopy[x][y] = this.model.getPieceInstantanee().getIndice();
+                grillecopy[x][y] = 10;
             }
             this.model.setGrille(grillecopy);
         }
     }
+
 
     public void pause() {
         this.model.setPause(!this.model.isPause());
@@ -110,6 +125,8 @@ public class Plateau extends JPanel {
 
         @Override
         public void keyPressed(KeyEvent e) {
+
+            
             int keycode = e.getKeyCode();
 
             switch (keycode) {
@@ -117,8 +134,9 @@ public class Plateau extends JPanel {
                 case KeyEvent.VK_LEFT: Plateau.this.controlPlateau.moveGauche();
                 case KeyEvent.VK_RIGHT: Plateau.this.controlPlateau.moveDroite();
                 case KeyEvent.VK_DOWN: Plateau.this.controlPlateau.descendrePiece();
+                case KeyEvent.VK_UP: Plateau.this.controlPlateau.rotationPiece();
+
                 /*
-                case KeyEvent.VK_UP -> tryMove(pieceCourrante.rotationGauche(), curX, curY);
                 case KeyEvent.VK_SPACE -> dropDown();
                 case KeyEvent.VK_D -> oneLineDown();*/
             }
