@@ -9,70 +9,49 @@ public class ControlPlateau {
         this.model = model;
     }
 
-    public void descendreGrille(int nbrLignesCompletes) {
-        for (int i = this.model.TAILLE_LIGNES-1; i > this.model.TAILLE_LIGNES-1 - 4; i--) {
-            for (int j = 1; j < this.model.TAILLE_COLONNES; j++) {
-                this.model.getGrille()[i][j] = 0;
-            }
-        }
-        for (int i = 8 - this.model.TAILLE_LIGNES; i > 0; i--) {
-            for (int j = 13; j > 0; j--) {
-                if (this.model.getGrille()[i][j] == 1) {
-                    this.model.getGrille()[i - this.model.TAILLE_LIGNES][j] = 1;
-                    this.model.getGrille()[i][j] = 0;
-                }
-            }
-        }
-    }
-
-
     public void descendrePiece() {
-        if(this.model.isLateralMouvement2()) {
-            if(this.model.isLateralMouvement())
-                this.model.setLateralMouvement(false);
-            else
-                this.model.setLateralMouvement2(false);
-            return;
-        }
         if(!isBloqueBas()){
-            int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
             int[][] tetri = new int[4][2];
             for (int i = 0; i < 4; i++) {
                 tetri[i][0] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]+1;
                 tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
-                grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = 0;
-
             }
             this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
-            this.model.setGrille(grillecopy);
 
         }else
             this.bloquerPiece();
     }
 
     private boolean isBloqueBas() {
+        Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+        for(int i=0; i<4; i++){
+            grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = Tetrimino.TypeTetrimino.Vide;
+        }
         for(int i=0;i<4;i++) {
             //verification sur la ligne suivante
             int ligne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]+1;
             int colonne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
-            if(ligne >= this.model.TAILLE_LIGNES){
+            if(ligne >= this.model.TAILLE_LIGNES)
                 return true;
-            }
-            if(this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != 10){
+            if(grillecopy[ligne][colonne] != Tetrimino.TypeTetrimino.Vide){
                 return true;
             }
         }
         return false;
     }
 
-    private void bloquerPiece() {
-        int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
-        for (int i = 0; i < 4; i++) {
-            int x = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
-            int y = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
-            grillecopy[x][y] = this.model.getPieceInstantanee().getIndice();
+    public void dropDown() {
+        while (!isBloqueBas()) {
+            descendrePiece();
         }
-        this.model.setGrille(grillecopy);
+        bloquerPiece();
+    }
+
+    private void bloquerPiece() {
+        Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+        for(int i=0; i<4; i++){
+            grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = this.model.getPieceInstantanee().getType();
+        }
         Tetrimino tetrimino = new Tetrimino();
         this.model.setPieceInstantanee(tetrimino);
         this.model.initPiece();
@@ -80,38 +59,34 @@ public class ControlPlateau {
 
     public void moveGauche() {
         if(!isMurGauche()) {
-            int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
             int[][] tetri = new int[4][2];
             for (int i = 0; i < 4; i++) {
                 tetri[i][0] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
-                tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]-2;
-                grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = 0;
+                tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]-1;
             }
-            this.model.setGrille(grillecopy);
             this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
         }
         else {
-            int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
             int[][] tetri = new int[4][2];
             for (int i = 0; i < 4; i++) {
                 tetri[i][0] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
-                tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1] - 1;
-                grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = 0;
+                tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
             }
-            this.model.setGrille(grillecopy);
             this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
         }
-        this.model.setLateralMouvement(true);
-        this.model.setLateralMouvement2(true);
     }
     public boolean isMurGauche(){
+        Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+        for(int i=0; i<4; i++){
+            grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = Tetrimino.TypeTetrimino.Vide;
+        }
         for(int i=0;i<4;i++) {
             //verification sur la ligne suivante
             int ligne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
             int colonne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]-1;
             if(colonne == 0)
                 return true;
-            if(this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != 10){
+            if(grillecopy[ligne][colonne] != Tetrimino.TypeTetrimino.Vide){
                 return true;
             }
         }
@@ -119,27 +94,26 @@ public class ControlPlateau {
     }
     public void moveDroite() {
         if (!isMurDroite()) {
-            int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
             int[][] tetri = new int[4][2];
             for (int i = 0; i < 4; i++) {
                 tetri[i][0] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
                 tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]+1;
-                grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = 0;
             }
-            this.model.setGrille(grillecopy);
             this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
         }
-        this.model.setLateralMouvement(true);
-        this.model.setLateralMouvement2(true);
     }
     public boolean isMurDroite() {
+        Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+        for(int i=0; i<4; i++){
+            grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = Tetrimino.TypeTetrimino.Vide;
+        }
         for(int i=0;i<4;i++) {
             //verification sur la ligne suivante
             int ligne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
             int colonne = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]+1;
             if(colonne >= this.model.TAILLE_COLONNES)
                 return true;
-            if(this.model.getGrille()[ligne][colonne] != 0 && this.model.getGrille()[ligne][colonne] != 10){
+            if(grillecopy[ligne][colonne] != Tetrimino.TypeTetrimino.Vide){
                 return  true;
             }
         }
@@ -151,10 +125,10 @@ public class ControlPlateau {
 
     }
 
-
     private boolean isLigneComplete(int ligne){
-        for(int i=0; i<this.model.TAILLE_COLONNES; i++) {
-            if(this.model.getGrille()[ligne][i] == 0){
+        for(int i=0; i<this.model.TAILLE_COLONNES-1; i++) {
+            if (this.model.getGrille()[ligne][i] == Tetrimino.TypeTetrimino.Vide) {
+                System.out.println(this.model.getGrille()[ligne][i]);
                 return false;
             }
         }
@@ -162,36 +136,58 @@ public class ControlPlateau {
     }
     public int nbrLignesCompletes(){
         int lignes =0;
-        for(int i=this.model.TAILLE_LIGNES-1;i>this.model.TAILLE_LIGNES-4; i--){
-            if(isLigneComplete(i)) {
+        for(int i=this.model.TAILLE_LIGNES-1;i>this.model.TAILLE_LIGNES-5; i--) {
+            if (isLigneComplete(i))
                 lignes++;
-            }
         }
+        System.out.println(lignes);
+        this.model.addPoints(lignes);
         return lignes;
     }
 
-    public void rotationPiece(){
-        if(!this.isBloqueBas()) {
-            int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
-            int[][] tetri = new int[4][2];
-            for (int i = 0; i < 4; i++) {
-                tetri[i][0] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]-1;
-                tetri[i][1] = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
-                grillecopy[this.model.getPieceInstantanee().getCoordsTetrimino()[i][0]][this.model.getPieceInstantanee().getCoordsTetrimino()[i][1]] = 0;
+        public void clearPlateau() {
+            Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+            for (int i = 0; i < this.model.TAILLE_LIGNES; i++){
+                for(int j=0;j<this.model.TAILLE_COLONNES; j++) {
+                    grillecopy[i][j] = Tetrimino.TypeTetrimino.Vide;
+                }
             }
             this.model.setGrille(grillecopy);
-            this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
+            this.model.initModel();
+        }
+    public void rotationPiece(){
+        int[][] tetri = new int[4][2];
+        for (int i = 0; i < 4; i++) {
+            tetri[i][0] = this.model.getPieceInstantanee().getCooBase()[i][1] - this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
+            tetri[i][1] = -this.model.getPieceInstantanee().getCooBase()[i][0] - this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
+        }
+        for (int i = 0; i < 4; i++) {
+            System.out.println(tetri[i][0] + "|" + tetri[i][1]);
+        }
+        this.model.getPieceInstantanee().setCoordsTetrimino(tetri);
+    }
+
+    public void descendreGrille(int nbrLignesCompletes) {
+        for (int i = this.model.TAILLE_LIGNES-1; i > this.model.TAILLE_LIGNES-1 - 4; i--) {
+            for (int j = 0; j < this.model.TAILLE_COLONNES; j++) {
+                this.model.getGrille()[i][j] = Tetrimino.TypeTetrimino.Vide;
+            }
+        }
+        Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+        for (int i =this.model.TAILLE_LIGNES-1; i > 0; i--) {
+            for (int j = this.model.TAILLE_COLONNES-1; j > 0; j--) {
+                if (this.model.getGrille()[i][j] == Tetrimino.TypeTetrimino.Vide) {
+                    grillecopy[i][j] = this.model.getGrille()[i-1][j];
+                    grillecopy[i-1][j] = Tetrimino.TypeTetrimino.Vide;
+                }
+            }
         }
     }
 
 
     public boolean isPieceStockee() {
-        return !(this.model.getPieceStockee().getCoordsTetrimino() == null);
+        return (this.model.getPieceStockee().getType()!= null);
     }
-    public boolean isPieceStockeeDejaAppelee(){
-        return this.model.isPieceStockeeAppelee();
-    }
-
     public void utiliserPieceStockee() {
         Tetrimino pivot = new Tetrimino(this.model.getPieceInstantanee());
         this.model.getPieceInstantanee().setCoordsTetrimino(this.model.getPieceStockee().getCoordsTetrimino());

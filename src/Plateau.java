@@ -25,34 +25,30 @@ public class Plateau extends JPanel {
         addKeyListener(new TAdapter());
     }
 
-    //à utiliser pour dessiner un carré
+    //à utiliser pour dessiner dans la grille
     private int getSquareWidth(){
-        return (int) getSize().getWidth() / this.model.TAILLE_COLONNES+1;
+        return (int) getSize().getWidth() / this.model.TAILLE_COLONNES;
     }
     private int squareHeight() {
-        return (int) getSize().getHeight() / this.model.TAILLE_LIGNES+1;
+        return (int) getSize().getHeight() / this.model.TAILLE_LIGNES;
     }
-
 
     public void paintComponent(Graphics g) {
 
         super.paintComponent(g);
         doDrawing(g);
     }
-    private void doDrawing(Graphics g) {
 
+    public void doDrawing(Graphics g) {
         var size = getSize();
         int top = (int) size.getHeight() - this.model.TAILLE_LIGNES * squareHeight();
         for (int i = 0; i < this.model.TAILLE_LIGNES; i++) {
             for (int j = 1; j < this.model.TAILLE_COLONNES; j++) {
-                if(this.model.getGrille()[i][j] != 0) {
-                    if(this.model.getGrille()[i][j]==10)
-                        g.setColor(this.model.getColor()[this.model.getPieceInstantanee().getIndice()]);
-                    else
-                        g.setColor(this.model.getColor()[this.model.getGrille()[i][j]]);
-                }else{
-                    //si on laissait le blanc à 0, cela aurait été plus compliqué à gérer avec la pièce d'indice 0 qui aurait eu une couleur blanche
-                    g.setColor(this.model.getColor()[7]);
+                for(int k=0; k<8; k++) {
+                    if (Tetrimino.TypeTetrimino.values()[k] == this.model.getGrille()[i][j]) {
+                        g.setColor(this.model.getColor()[k]);
+                        break;
+                    }
                 }
                 drawSquare(g, j * getSquareWidth(),
                         top + i * squareHeight());
@@ -64,16 +60,11 @@ public class Plateau extends JPanel {
     }
 
     public void play(Fenetre fen) throws InterruptedException {
-        int x;
-        int y;
-        for (int i = 0; i < 4; i++) {
-            x = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
-            y = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
-        }
-        fen.repaint();
+        repaint();
         Timer timer = new Timer(this.model.getVitesse(), new GameCycle());
         timer.start();
     }
+
     private class GameCycle implements ActionListener {
 
         @Override
@@ -83,38 +74,27 @@ public class Plateau extends JPanel {
         }
     }
     public void doGameCycle() {
-
         update();
-        repaint();
     }
 
     private void update() {
         if(model.isPause()){
-            int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
-            for (int i = 0; i < 4; i++) {
-                int x = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
-                int y = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
-                grillecopy[x][y] = this.model.getPieceInstantanee().getIndice();
-            }
-            this.model.setGrille(grillecopy);
-            return;
+           return;
         }
-
-        else if(!this.model.getPerdu()) {
-            if (this.controlPlateau.nbrLignesCompletes() != 0) {
-                this.controlPlateau.descendreGrille(this.controlPlateau.nbrLignesCompletes());
-            }
+        else if(!this.model.getPerdu() && this.controlPlateau.nbrLignesCompletes() == 0) {
             this.controlPlateau.descendrePiece();
-            int[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+            Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
             for (int i = 0; i < 4; i++) {
                 int x = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
                 int y = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
-                grillecopy[x][y] = 10;
+                grillecopy[x][y] = this.model.getPieceInstantanee().getType();
             }
             this.model.setGrille(grillecopy);
+        }else{
+            this.controlPlateau.descendreGrille(this.controlPlateau.nbrLignesCompletes());
         }
+        repaint();
     }
-
 
     public void pause() {
         this.model.setPause(!this.model.isPause());
@@ -126,19 +106,19 @@ public class Plateau extends JPanel {
         @Override
         public void keyPressed(KeyEvent e) {
 
-            
+            if(Plateau.this.model.getPieceInstantanee().getType() == Tetrimino.TypeTetrimino.Vide)
+                return;
+
             int keycode = e.getKeyCode();
 
             switch (keycode) {
-                case KeyEvent.VK_P: Plateau.this.pause();
-                case KeyEvent.VK_LEFT: Plateau.this.controlPlateau.moveGauche();
-                case KeyEvent.VK_RIGHT: Plateau.this.controlPlateau.moveDroite();
-                case KeyEvent.VK_DOWN: Plateau.this.controlPlateau.descendrePiece();
-                case KeyEvent.VK_UP: Plateau.this.controlPlateau.rotationPiece();
+                case KeyEvent.VK_P: Plateau.this.pause();break;
+                case KeyEvent.VK_LEFT: Plateau.this.controlPlateau.moveGauche();break;
+                case KeyEvent.VK_RIGHT: Plateau.this.controlPlateau.moveDroite();break;
+                case KeyEvent.VK_DOWN: Plateau.this.controlPlateau.descendrePiece();break;
+                case KeyEvent.VK_UP: Plateau.this.controlPlateau.rotationPiece();Plateau.this.controlPlateau.rotationPiece();break;
 
-                /*
-                case KeyEvent.VK_SPACE -> dropDown();
-                case KeyEvent.VK_D -> oneLineDown();*/
+                case KeyEvent.VK_SPACE: Plateau.this.controlPlateau.dropDown();break;
             }
         }
     }

@@ -1,7 +1,7 @@
 import java.awt.*;
 
 public class Model {
-    private int[][] grille;
+    private Tetrimino.TypeTetrimino[][] grille;
     private Tetrimino pieceInstantanee;
     private boolean perdu;
     private int basDepart;
@@ -16,19 +16,20 @@ public class Model {
     private Color[] color;
     private boolean lateralMouvement;
     private boolean lateralMouvement2;
+    private boolean isPiecePlace;
 
     public Model(){
         initModel();
         this.pieceInstantanee = new Tetrimino();
-        this.pieceInstantanee.initCoordTetrimino();
+        this.pieceInstantanee.initTetrimino();
         initPiece();
-        this.grille = new int[TAILLE_LIGNES][TAILLE_COLONNES];
+        this.grille = new Tetrimino.TypeTetrimino[TAILLE_LIGNES][TAILLE_COLONNES];
         initGrille();
     }
     public void initGrille() {
         for (int i = 0; i < TAILLE_LIGNES; i++) {
             for (int j = 0; j < this.TAILLE_COLONNES; j++) {
-                this.grille[i][j] = 0;
+                this.grille[i][j] = Tetrimino.TypeTetrimino.Vide;
             }
         }
         //clear le panel
@@ -44,19 +45,22 @@ public class Model {
     }
 
     public void initModel() {
+        this.isPiecePlace = false;
         this.basDepart = 2;
         this.lateraldepart = (int)TAILLE_COLONNES/2;
         this.perdu = false;
-        this.vitesse = 500;
+        this.vitesse = 300;
         this.isPause = false;
         this.points = 0;
         this.lateralMouvement = false;
         this.lateralMouvement2 = false;
-        this.color = new Color[]{new Color(222, 99, 99),
-                new Color(99, 222, 99), new Color(99, 99, 222),
-                new Color(222, 222, 99), new Color(222, 99, 222),
-                new Color(99, 222, 222), new Color(222, 166, 0),
+        this.color = new Color[]{
+                new Color(186, 10, 10),
+                new Color(1, 212, 1), new Color(19, 19, 186),
+                new Color(220, 220, 8), new Color(199, 11, 199),
+                new Color(15, 229, 229), new Color(243, 188, 30),
                 new Color(255, 255, 255)
+
         };
     }
 
@@ -148,11 +152,11 @@ public class Model {
         this.color = color;
     }
 
-    public int[][] getGrille() {
+    public Tetrimino.TypeTetrimino[][] getGrille() {
         return grille;
     }
 
-    public void setGrille(int[][] grille) {
+    public void setGrille(Tetrimino.TypeTetrimino[][] grille) {
         this.grille = grille;
     }
 
@@ -170,5 +174,13 @@ public class Model {
 
     public void setLateralMouvement2(boolean lateralMouvement2) {
         this.lateralMouvement2 = lateralMouvement2;
+    }
+
+    public boolean isPiecePlace() {
+        return isPiecePlace;
+    }
+
+    public void setPiecePlace(boolean piecePlace) {
+        isPiecePlace = piecePlace;
     }
 }
