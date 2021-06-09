@@ -9,10 +9,18 @@ public class ControlMenu implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == fenetre.getVersion1()){
-            fenetre.changerVersion(1);
+            try {
+                fenetre.changerVersion(1);
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
+            }
         }
         else if(e.getSource() == fenetre.getVersion2()){
-            fenetre.changerVersion(2);
+            try {
+                fenetre.changerVersion(2);
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
+            }
         }else if(e.getSource() == fenetre.getPause()){
             //fenetre.changerVersion(2); //Pause
         }else if(e.getSource() == fenetre.getMuteSound()){
