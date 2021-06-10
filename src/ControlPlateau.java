@@ -125,13 +125,14 @@ public class ControlPlateau {
 
     }
 
-    private boolean isLigneComplete(int ligne){
+    public boolean isLigneComplete(int ligne){
         for(int i=0; i<this.model.TAILLE_COLONNES-1; i++) {
             if (this.model.getGrille()[ligne][i] == Tetrimino.TypeTetrimino.Vide) {
                 System.out.println(this.model.getGrille()[ligne][i]);
                 return false;
             }
         }
+
         return true;
     }
     public int nbrLignesCompletes(){

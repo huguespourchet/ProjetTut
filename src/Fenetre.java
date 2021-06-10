@@ -46,10 +46,11 @@ public class Fenetre extends JFrame {
         this.plateau = plateau;
         this.controlPlateau = controlPlateau;
         this.model = model;
+        scoreLabel = new JLabel("0");
         initAttribut();
         changerVersion2();
         setTitle("Tetris1");
-        scoreLabel = new JLabel("0");
+
 
 
         setLocation(200,200);
@@ -84,6 +85,9 @@ public class Fenetre extends JFrame {
 
     public void changerVersion1() throws InterruptedException {
 
+        //Appel d'un nouveau controller pour pouvoir bouger lors du lancement du jeu
+        //après le premier controller créer dans le Menu
+        ControlGroup control = new ControlGroup();
         //Menu
         barMenu = new JMenuBar();
         menu1 = new JMenu("Menu");

@@ -63,6 +63,7 @@ public class Plateau extends JPanel {
         repaint();
         Timer timer = new Timer(this.model.getVitesse(), new GameCycle());
         timer.start();
+
     }
 
     private class GameCycle implements ActionListener {
@@ -116,7 +117,7 @@ public class Plateau extends JPanel {
                 case KeyEvent.VK_LEFT: Plateau.this.controlPlateau.moveGauche();break;
                 case KeyEvent.VK_RIGHT: Plateau.this.controlPlateau.moveDroite();break;
                 case KeyEvent.VK_DOWN: Plateau.this.controlPlateau.descendrePiece();break;
-                case KeyEvent.VK_UP: Plateau.this.controlPlateau.rotationPiece();Plateau.this.controlPlateau.rotationPiece();break;
+                case KeyEvent.VK_UP: Plateau.this.controlPlateau.rotationPiece();break;
 
                 case KeyEvent.VK_SPACE: Plateau.this.controlPlateau.dropDown();break;
             }
