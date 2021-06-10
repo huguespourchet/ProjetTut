@@ -1,8 +1,11 @@
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 public class Fenetre extends JFrame {
     public Plateau plateau;
@@ -45,6 +48,9 @@ public class Fenetre extends JFrame {
     // label to display text
     private JLabel labelValider;
 
+    private SimpleAudioPlayer audioPlayer;
+    private static String filePath;
+
     /**
      * Taille plateau de jeu
      */
@@ -59,11 +65,12 @@ public class Fenetre extends JFrame {
      * @param model
      * @throws InterruptedException
      */
-    public Fenetre(Plateau plateau, ControlPlateau controlPlateau, Model model) throws InterruptedException {
+    public Fenetre(Plateau plateau, ControlPlateau controlPlateau, Model model) throws InterruptedException, UnsupportedAudioFileException, IOException, LineUnavailableException {
         this.plateau = plateau;
         this.controlPlateau = controlPlateau;
         this.model = model;
         scoreLabel = new JLabel("0");
+        this.filePath = "musique/tetrisTheme.wav";
         initAttribut();
         changerVersion2();
         setTitle("Tetris1");
@@ -106,7 +113,7 @@ public class Fenetre extends JFrame {
      * Fenetre de JEU
      * @throws InterruptedException
      */
-    public void changerVersion1() throws InterruptedException {
+    public void changerVersion1() throws InterruptedException, UnsupportedAudioFileException, IOException, LineUnavailableException {
 
         //Appel d'un nouveau controlGroup pour pouvoir bouger lors du lancement du jeu
         //après le premier controller créer dans le Menu
@@ -118,7 +125,7 @@ public class Fenetre extends JFrame {
 //        this.plateau = new Plateau(model,controlPlateau);
         //RESOLUTION : CE BUG VIENT DE CONTROLGROUP OÙ L'ON CRÉER UNE NOUVELLE FENETRE, CELA NE DEVRAIT PAS SE PRODUIRE
         //MANQUE DE TEMPS POUR RÉSOUDRE CELA...
-
+        audioPlayer = new SimpleAudioPlayer(filePath);
 
         /**
          * Menu
