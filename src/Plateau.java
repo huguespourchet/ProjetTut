@@ -19,86 +19,118 @@ public class Plateau extends JPanel {
         initPlateau();
     }
 
-
+    /**
+     * relie plateau de jeu à panel de la fenetre
+     */
     public void initPlateau(){
         setFocusable(true);
         addKeyListener(new TAdapter());
     }
 
-    //à utiliser pour dessiner dans la grille
+    /**
+     * donne les coordonnées correspondant à une case de la grille de jeu dans la fenetre
+     * @return la taille d'une case en largeur
+     */
     private int getSquareWidth(){
         return (int) getSize().getWidth() / this.model.TAILLE_COLONNES;
     }
+/**
+ * donne les coordonnées correspondant à une case de la grille de jeu dans la fenetre
+ * @return la taille d'une case en hauteur
+ * */
     private int squareHeight() {
         return (int) getSize().getHeight() / this.model.TAILLE_LIGNES;
     }
 
+    /**
+     * redéfinition de la focntion repaint()
+     * @param g Graphics object
+     */
     public void paintComponent(Graphics g) {
 
         super.paintComponent(g);
         doDrawing(g);
     }
 
+    /**
+     * dessin de carrés colorés dans la grille de jeu, en fonction du type de chaque case
+     * @param g Graphics object
+     */
     public void doDrawing(Graphics g) {
         var size = getSize();
         int top = (int) size.getHeight() - this.model.TAILLE_LIGNES * squareHeight();
+        //parcours de la grille de jeu
         for (int i = 0; i < this.model.TAILLE_LIGNES; i++) {
             for (int j = 1; j < this.model.TAILLE_COLONNES; j++) {
+                //initialise la couleur en fonction du type piece(blanc pour vide)
                 for(int k=0; k<8; k++) {
                     if (Tetrimino.TypeTetrimino.values()[k] == this.model.getGrille()[i][j]) {
                         g.setColor(this.model.getColor()[k]);
                         break;
                     }
                 }
+                //dessin aux coordonnées dans la fenetre
                 drawSquare(g, j * getSquareWidth(),
                         top + i * squareHeight());
             }
         }
     }
+
+    /**
+     * dessin d'un carré de taille de d'emplacement prédéfinis
+     * @param g Graphics object
+     * @param x
+     * @param y
+     */
     private void drawSquare(Graphics g, int x, int y) {
         g.fillRect(x + 1, y + 1, getSquareWidth() - 2, squareHeight() - 2);
     }
 
+    /**
+     * initialise le chronometre executant un cycle de jeu
+     * @param fen
+     * @throws InterruptedException
+     */
     public void play(Fenetre fen) throws InterruptedException {
         repaint();
         Timer timer = new Timer(this.model.getVitesse(), new GameCycle());
         timer.start();
     }
 
-    public void clearPlateau() {
-        Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
-        for (int i = 0; i < this.model.TAILLE_LIGNES; i++){
-            for(int j=0;j<this.model.TAILLE_COLONNES; j++) {
-                grillecopy[i][j] = Tetrimino.TypeTetrimino.Vide;
-            }
-        }
-        this.model.setGrille(grillecopy);
-        this.model.initModel();
-    }
     private class GameCycle implements ActionListener {
-
+        /**
+         * action listener reliant le chronomètre à la fonction d'exécution du cycle
+         * @param e
+         */
         @Override
         public void actionPerformed(ActionEvent e) {
 
             doGameCycle();
         }
     }
-    public void doGameCycle() {
-        update();
-    }
 
-    private void update() {
+    /**
+     * appel le controller relié à la classe plateau pour exécuter le cycle
+     */
+    public void doGameCycle() {
         this.controlPlateau.cycle();
         repaint();
+
     }
 
+    /**
+     * met ou enlève la pause du jeu
+     */
     public void pause() {
         this.model.setPause(!this.model.isPause());
         //afficher pause
     }
 
     class TAdapter extends KeyAdapter {
-
+        /**
+         * écoute les touches de clavier et appel les fonctions correspondantes
+         * @param e
+         */
         @Override
         public void keyPressed(KeyEvent e) {
 
