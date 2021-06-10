@@ -13,12 +13,14 @@ public class ControlMenu implements ActionListener {
                 fenetre.changerVersion(1);
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
         }
         else if(e.getSource() == fenetre.getVersion2()){
             try {
                 fenetre.changerVersion(2);
-            } catch (InterruptedException interruptedException) {
+            } catch (Exception interruptedException) {
                 interruptedException.printStackTrace();
             }
         }else if(e.getSource() == fenetre.getPause()){

@@ -9,6 +9,7 @@ public class Fenetre extends JFrame {
     private ControlMenu ctrlMenu;
     private ControlBouton ctrlBouton;
     private ControlPlateau controlPlateau;
+    private ControlGroup controlGroup;
     private Model model;
 
     private JMenuBar barMenu;
@@ -65,7 +66,7 @@ public class Fenetre extends JFrame {
 
     }
 
-    public void changerVersion(int version) throws InterruptedException {
+    public void changerVersion(int version) throws Exception {
 
         initAttribut();
         if(version == 1){
@@ -87,7 +88,15 @@ public class Fenetre extends JFrame {
 
         //Appel d'un nouveau controller pour pouvoir bouger lors du lancement du jeu
         //après le premier controller créer dans le Menu
-        ControlGroup control = new ControlGroup();
+        //BUG: SI COMMENTÉ, LES PIECES NE BOUGENT PAS, MAIS NE CRÉER PAS DE NOUVELLE FENETRE
+        controlGroup = new ControlGroup();
+        //BUG : SI NON COMMENTÉ, NE RECRÉER PAS DE NOUVELLE FENETRE  ; MAIS LES TOUCHES DE DÉPLACEMENT NE SONT PAS PRISE EN COMPTE
+//        this.model = new Model();
+//        this.controlPlateau = new ControlPlateau(model);
+//        this.plateau = new Plateau(model,controlPlateau);
+
+
+
         //Menu
         barMenu = new JMenuBar();
         menu1 = new JMenu("Menu");
@@ -119,12 +128,14 @@ public class Fenetre extends JFrame {
 
         JPanel pano1 = new JPanel();
         pano1.setPreferredSize(new Dimension(100,50));
+        pano1.setBackground(new Color(175, 0, 24));
         JLabel labelTitle = new JLabel("TETRIS");
         labelTitle.setFont(new Font("Serif", Font.BOLD, 24));
         pano1.add(labelTitle);
         panelGlobal.add(pano1,BorderLayout.NORTH);
 
         JPanel pano2 = new JPanel();
+        pano2.setBackground(new Color(175, 0, 24));
         pano2.setLayout(new BoxLayout(pano2, BoxLayout.Y_AXIS));
 
 
@@ -161,6 +172,7 @@ public class Fenetre extends JFrame {
 
         //coté droit
         JPanel pano4 = new JPanel();
+        pano4.setBackground(new Color(175, 0, 24));
         pano4.setLayout(new BoxLayout(pano4, BoxLayout.Y_AXIS));
 
         //carré Score
@@ -232,6 +244,7 @@ public class Fenetre extends JFrame {
 
         JPanel pano5 = new JPanel();
         pano5.setPreferredSize(new Dimension(100,50));
+        pano5.setBackground(new Color(175, 0, 24));
         panelGlobal.add(pano5,BorderLayout.SOUTH);
 
         setContentPane(panelGlobal);
@@ -468,7 +481,7 @@ public class Fenetre extends JFrame {
         panelGlobal.add(pano2,BorderLayout.CENTER);
         setContentPane(panelGlobal);
     }
-    public void changerVersion4(){
+    public void changerVersion4() throws Exception {
 
         //Menu
         barMenu = new JMenuBar();
@@ -552,8 +565,16 @@ public class Fenetre extends JFrame {
         labelValider.setFont(new Font("Hyeon",Font.BOLD, 20));
         labelValider.setForeground(Color.BLACK);
 
+        int portTetris = 6667;
+
+        String nomMachine = JOptionPane.showInputDialog
+                (null, "Nom de la machine hôte ?");
+        //setContentPane(new FenetreJoueurClient(joueur));
+//        Socket socket = new Socket(nomMachine, portTetris);
+//        JoueurClient joueur = new JoueurClient(socket);
 
         textValider = new JTextField(16);
+
         textValider.setBackground(new Color(230, 77, 98));
         textValider.setBorder(new LineBorder(Color.BLACK));
         pano2_2.add(labelValider);
@@ -561,17 +582,17 @@ public class Fenetre extends JFrame {
         pano2_2.add(jButValider);
 
 
-        JPanel pano2_3 = new JPanel();
-        pano2_3.setBackground(new Color(175, 0, 24));
-        pano2_3.setBorder(new LineBorder(new Color(230, 77, 98)));
-        jButParam = new JButton("Paramètre");
-        jButParam.setPreferredSize(new Dimension(150,50));
-        jButParam.setBackground(new Color(230, 77, 98));
-        jButParam.setForeground(Color.BLACK);
-        jButParam.setFocusPainted(false);
-        jButParam.setFont(new Font("Hyeon", Font.BOLD, 20));
-        jButParam.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
-        pano2_3.add(jButParam);
+//        JPanel pano2_3 = new JPanel();
+//        pano2_3.setBackground(new Color(175, 0, 24));
+//        pano2_3.setBorder(new LineBorder(new Color(230, 77, 98)));
+//        jButParam = new JButton("Paramètre");
+//        jButParam.setPreferredSize(new Dimension(150,50));
+//        jButParam.setBackground(new Color(230, 77, 98));
+//        jButParam.setForeground(Color.BLACK);
+//        jButParam.setFocusPainted(false);
+//        jButParam.setFont(new Font("Hyeon", Font.BOLD, 20));
+//        jButParam.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+//        pano2_3.add(jButParam);
 
         JPanel pano2_4 = new JPanel();
         pano2_4.setBackground(new Color(175, 0, 24));
@@ -635,7 +656,7 @@ public class Fenetre extends JFrame {
 
     public void augmenterScore(){
 //       if(controlPlateau.isLigneComplete())
-        setScoreLabel(String.valueOf(controlPlateau.nbrLignesCompletes()));
+        //setScoreLabel(String.valueOf(controlPlateau.nbrLignesCompletes()));
     }
 
     public void display(){ setVisible(true); }
@@ -652,6 +673,7 @@ public class Fenetre extends JFrame {
     public JButton getRetour(){return jButRetour;}
     public JLabel getScoreLabel(){ return scoreLabel; }
     public void setScoreLabel(String txt){ this.scoreLabel.setText(txt); }
+    public String getTextReseau(){ return textValider.getText(); }
 
 
 }

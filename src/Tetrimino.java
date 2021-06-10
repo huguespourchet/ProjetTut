@@ -1,19 +1,21 @@
+import java.util.Arrays;
 import java.util.Random;
 
 public class Tetrimino {
-    
+
     public enum TypeTetrimino {
         Z, S, I, T, O, L, J, Vide;
 
     }
     private int[][] coordsTetrimino;
-    private int[][][] coordsTable;
+    private int[][][] tableTetriminos;
     private TypeTetrimino type;
     private int indice;
     private int[][] cooBase;
+    private Model model;
 
-    public Tetrimino(){
-        this.coordsTable = new int[][][] {
+    public Tetrimino(Model model){
+        this.tableTetriminos = new int[][][] {
                 { { 0, -1 },  { 0, 0 },   { -1, 0 },  { -1, 1 } },
                 { { 0, -1 },  { 0, 0 },   { 1, 0 },   { 1, 1 } },
                 { { 0, -1 },  { 0, 0 },   { 0, 1 },   { 0, 2 } },
@@ -22,6 +24,7 @@ public class Tetrimino {
                 { { -1, -1 }, { 0, -1 },  { 0, 0 },   { 0, 1 } },
                 { { 1, -1 },  { 0, -1 },  { 0, 0 },   { 0, 1 } }
         };
+        this.model = model;
         initTetrimino();
     }
 
@@ -36,33 +39,122 @@ public class Tetrimino {
         this.cooBase = new int[4][2];
         for(int i=0;i<4;i++){
             for(int j=0;j<2;j++){
-                this.coordsTetrimino[i][j] = this.coordsTable[indice][i][j];
-                this.cooBase[i][j] = this.coordsTable[indice][i][j];
+                this.coordsTetrimino[i][j] = this.tableTetriminos[indice][i][j];
+                this.cooBase[i][j] = this.tableTetriminos[indice][i][j];
             }
         }
         this.type = values[indice];
     }
 
-    private void setX(int index, int x) {
-        this.coordsTetrimino[index][0] = x;
-    }
-    private void setY(int index, int y) {
-        this.coordsTetrimino[index][1] = y;
-    }
-    public int x(int index) {
-        return this.coordsTetrimino[index][0];
-    }
-    public int y(int index) {
-        return this.coordsTetrimino[index][1];
+    public int[][] descendrePiece() {
+        int[][]ancienneCoos = new int[4][2];
+        int[][] tetri = new int[4][2];
+            for (int i = 0; i < 4; i++) {
+                tetri[i][0] = this.getCoordsTetrimino()[i][0]+1;
+                tetri[i][1] = this.getCoordsTetrimino()[i][1];
+                ancienneCoos[i][0] = this.getCoordsTetrimino()[i][0];
+                ancienneCoos[i][1] = this.getCoordsTetrimino()[i][1];
+            }
+            this.setCoordsTetrimino(tetri);
+            return ancienneCoos;
     }
 
+    public boolean isBloqueBas() {
+        Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+        for(int i=0; i<4; i++){
+            grillecopy[this.getCoordsTetrimino()[i][0]][this.getCoordsTetrimino()[i][1]] = Tetrimino.TypeTetrimino.Vide;
+        }
+        for(int i=0;i<4;i++) {
+            //verification sur la ligne suivante
+            int ligne = this.getCoordsTetrimino()[i][0]+1;
+            int colonne = this.getCoordsTetrimino()[i][1];
+            if(ligne >= this.model.TAILLE_LIGNES)
+                return true;
+            if(grillecopy[ligne][colonne] != Tetrimino.TypeTetrimino.Vide){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void moveGauche() {
+        if(!isMurGauche()) {
+            int[][] tetri = new int[4][2];
+            for (int i = 0; i < 4; i++) {
+                tetri[i][0] = this.getCoordsTetrimino()[i][0];
+                tetri[i][1] = this.getCoordsTetrimino()[i][1]-1;
+            }
+            this.setCoordsTetrimino(tetri);
+        }
+        else {
+            int[][] tetri = new int[4][2];
+            for (int i = 0; i < 4; i++) {
+                tetri[i][0] = this.getCoordsTetrimino()[i][0];
+                tetri[i][1] = this.getCoordsTetrimino()[i][1];
+            }
+            this.setCoordsTetrimino(tetri);
+        }
+    }
+    public boolean isMurGauche(){
+        Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+        for(int i=0; i<4; i++){
+            grillecopy[this.getCoordsTetrimino()[i][0]][this.getCoordsTetrimino()[i][1]] = Tetrimino.TypeTetrimino.Vide;
+        }
+        for(int i=0;i<4;i++) {
+            //verification sur la ligne suivante
+            int ligne = this.getCoordsTetrimino()[i][0];
+            int colonne = this.getCoordsTetrimino()[i][1]-1;
+            if(colonne == 0)
+                return true;
+            if(grillecopy[ligne][colonne] != Tetrimino.TypeTetrimino.Vide){
+                return true;
+            }
+        }
+        return false;
+    }
+    public void moveDroite() {
+        if (!isMurDroite()) {
+            int[][] tetri = new int[4][2];
+            for (int i = 0; i < 4; i++) {
+                tetri[i][0] = this.getCoordsTetrimino()[i][0];
+                tetri[i][1] = this.getCoordsTetrimino()[i][1]+1;
+            }
+            this.setCoordsTetrimino(tetri);
+        }
+    }
+    public boolean isMurDroite() {
+        Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+        for(int i=0; i<4; i++){
+            grillecopy[this.getCoordsTetrimino()[i][0]][this.getCoordsTetrimino()[i][1]] = Tetrimino.TypeTetrimino.Vide;
+        }
+        for(int i=0;i<4;i++) {
+            //verification sur la ligne suivante
+            int ligne = this.getCoordsTetrimino()[i][0];
+            int colonne = this.getCoordsTetrimino()[i][1]+1;
+            if(colonne >= this.model.TAILLE_COLONNES)
+                return true;
+            if(grillecopy[ligne][colonne] != Tetrimino.TypeTetrimino.Vide){
+                return  true;
+            }
+        }
+        return false;
+    }
+
+    public void rotate() {
+        for(int i=0; i<4; i++){
+            this.tableTetriminos[this.indice][i][0] = -this.tableTetriminos[this.indice][i][1];
+            this.tableTetriminos[this.indice][i][1] = this.tableTetriminos[this.indice][i][0];
+            this.coordsTetrimino[i][0] += this.tableTetriminos[this.indice][i][0];
+            this.coordsTetrimino[i][1] += this.tableTetriminos[this.indice][i][1];
+        }
+    }
 
     public int[][] getCoordsTetrimino() {
         return coordsTetrimino;
     }
 
     public int[][][] getCoordsTable() {
-        return coordsTable;
+        return tableTetriminos;
     }
 
     public void setCoordsTetrimino(int[][] coordsTetrimino) {

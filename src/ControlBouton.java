@@ -18,19 +18,19 @@ public class ControlBouton implements ActionListener{
         if(e.getSource() == fenetre.getPlay() ){
             try {
                 fenetre.changerVersion(1);
-            } catch (InterruptedException interruptedException) {
+            } catch (Exception interruptedException) {
                 interruptedException.printStackTrace();
             }
         } else if(e.getSource() == fenetre.getReseau() ){
             try {
                 fenetre.changerVersion(4);
-            } catch (InterruptedException interruptedException) {
+            } catch (Exception interruptedException) {
                 interruptedException.printStackTrace();
             }
         } else if(e.getSource() == fenetre.getParam() ){
             try {
                 fenetre.changerVersion(3);
-            } catch (InterruptedException interruptedException) {
+            } catch (Exception interruptedException) {
                 interruptedException.printStackTrace();
             }
         } else if(e.getSource() == fenetre.getExit() ){
@@ -38,7 +38,7 @@ public class ControlBouton implements ActionListener{
         } else if(e.getSource() == fenetre.getRetour() ){
             try {
                 fenetre.changerVersion(2);
-            } catch (InterruptedException interruptedException) {
+            } catch (Exception interruptedException) {
                 interruptedException.printStackTrace();
             }
         }

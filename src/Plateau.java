@@ -63,9 +63,18 @@ public class Plateau extends JPanel {
         repaint();
         Timer timer = new Timer(this.model.getVitesse(), new GameCycle());
         timer.start();
-
     }
 
+    public void clearPlateau() {
+        Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
+        for (int i = 0; i < this.model.TAILLE_LIGNES; i++){
+            for(int j=0;j<this.model.TAILLE_COLONNES; j++) {
+                grillecopy[i][j] = Tetrimino.TypeTetrimino.Vide;
+            }
+        }
+        this.model.setGrille(grillecopy);
+        this.model.initModel();
+    }
     private class GameCycle implements ActionListener {
 
         @Override
@@ -79,21 +88,7 @@ public class Plateau extends JPanel {
     }
 
     private void update() {
-        if(model.isPause()){
-           return;
-        }
-        else if(!this.model.getPerdu() && this.controlPlateau.nbrLignesCompletes() == 0) {
-            this.controlPlateau.descendrePiece();
-            Tetrimino.TypeTetrimino[][] grillecopy = Arrays.copyOf(this.model.getGrille(), this.model.getGrille().length);
-            for (int i = 0; i < 4; i++) {
-                int x = this.model.getPieceInstantanee().getCoordsTetrimino()[i][0];
-                int y = this.model.getPieceInstantanee().getCoordsTetrimino()[i][1];
-                grillecopy[x][y] = this.model.getPieceInstantanee().getType();
-            }
-            this.model.setGrille(grillecopy);
-        }else{
-            this.controlPlateau.descendreGrille(this.controlPlateau.nbrLignesCompletes());
-        }
+        this.controlPlateau.cycle();
         repaint();
     }
 
@@ -114,12 +109,12 @@ public class Plateau extends JPanel {
 
             switch (keycode) {
                 case KeyEvent.VK_P: Plateau.this.pause();break;
-                case KeyEvent.VK_LEFT: Plateau.this.controlPlateau.moveGauche();break;
-                case KeyEvent.VK_RIGHT: Plateau.this.controlPlateau.moveDroite();break;
+                case KeyEvent.VK_LEFT: Plateau.this.controlPlateau.deplacementGauche();break;
+                case KeyEvent.VK_RIGHT: Plateau.this.controlPlateau.deplacementDroit();break;
                 case KeyEvent.VK_DOWN: Plateau.this.controlPlateau.descendrePiece();break;
                 case KeyEvent.VK_UP: Plateau.this.controlPlateau.rotationPiece();break;
 
-                case KeyEvent.VK_SPACE: Plateau.this.controlPlateau.dropDown();break;
+                case KeyEvent.VK_SPACE: Plateau.this.controlPlateau.descendreMax();break;
             }
         }
     }

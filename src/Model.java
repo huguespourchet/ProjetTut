@@ -1,26 +1,28 @@
 import java.awt.*;
+import java.util.Arrays;
 
 public class Model {
+
+    public static final int TAILLE_LIGNES = 18;
+    public static final int TAILLE_COLONNES = 20;
+
     private Tetrimino.TypeTetrimino[][] grille;
     private Tetrimino pieceInstantanee;
+    private Tetrimino pieceStockee;
+    private Color[] color;
+
     private boolean perdu;
     private int basDepart;
     private int lateraldepart;
-    public final int TAILLE_LIGNES = 18;
-    public final int TAILLE_COLONNES = 20;
     private int vitesse;
-    private boolean isPause;
+    public boolean isPause;
     private int points;
-    private Tetrimino pieceStockee;
     private boolean pieceStockeeAppelee;
-    private Color[] color;
-    private boolean lateralMouvement;
-    private boolean lateralMouvement2;
     private boolean isPiecePlace;
 
     public Model(){
         initModel();
-        this.pieceInstantanee = new Tetrimino();
+        this.pieceInstantanee = new Tetrimino(this);
         this.pieceInstantanee.initTetrimino();
         initPiece();
         this.grille = new Tetrimino.TypeTetrimino[TAILLE_LIGNES][TAILLE_COLONNES];
@@ -32,7 +34,6 @@ public class Model {
                 this.grille[i][j] = Tetrimino.TypeTetrimino.Vide;
             }
         }
-        //clear le panel
     }
 
     public void initPiece(){
@@ -52,8 +53,6 @@ public class Model {
         this.vitesse = 300;
         this.isPause = false;
         this.points = 0;
-        this.lateralMouvement = false;
-        this.lateralMouvement2 = false;
         this.color = new Color[]{
                 new Color(186, 10, 10),
                 new Color(1, 212, 1), new Color(19, 19, 186),
@@ -64,8 +63,125 @@ public class Model {
         };
     }
 
+    public void moveGauche(){
+        if(!this.pieceInstantanee.isMurGauche())
+            this.pieceInstantanee.moveGauche();
+    }
+    public void moveDroit(){
+        if(!this.pieceInstantanee.isMurDroite())
+            this.pieceInstantanee.moveDroite();
+    }
+    public void descendre(){
+        int[][] effacer = new int[4][2];
+        if(!this.pieceInstantanee.isBloqueBas()) {
+            effacer = this.pieceInstantanee.descendrePiece();
+            for(int i=0; i<4; i++){
+                this.grille[effacer[i][0]][effacer[i][1]] = Tetrimino.TypeTetrimino.Vide;
+            }
+        }
+        else
+            bloquerPiece();
+    }
+    public void dropDown() {
+        while (!this.pieceInstantanee.isBloqueBas()) {
+            descendre();
+        }
+        this.bloquerPiece();
+    }
+    private void bloquerPiece() {
+        for(int i=0; i<4; i++){
+            grille[this.pieceInstantanee.getCoordsTetrimino()[i][0]][this.pieceInstantanee.getCoordsTetrimino()[i][1]] = this.pieceInstantanee.getType();
+        }
+        Tetrimino tetrimino = new Tetrimino(this);
+        this.setPieceInstantanee(tetrimino);
+        this.initPiece();
+        for(int i=0;i<4;i++){
+            if(this.grille[this.pieceInstantanee.getCoordsTetrimino()[i][0]][this.pieceInstantanee.getCoordsTetrimino()[i][1]] != Tetrimino.TypeTetrimino.Vide){
+                this.perdu = true;
+            }
+        }
+
+    }
+
+    public int nbrLignesCompletes(){
+        int lignes =0;
+        for(int i=0; i<TAILLE_LIGNES; i++) {
+            if (isLigneComplete(i))
+                lignes++;
+        }
+        this.addPoints(lignes);
+        return lignes;
+    }
+
+    private boolean isLigneComplete(int ligne){
+        for(int i=0; i<this.TAILLE_COLONNES; i++) {
+            if (this.grille[ligne][i] == Tetrimino.TypeTetrimino.Vide) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void descendreGrille(int nbrLignesCompletes) {
+        for (int i = this.TAILLE_LIGNES-1; i > this.TAILLE_LIGNES-1 - 4; i--) {
+            for (int j = 0; j < this.TAILLE_COLONNES; j++) {
+                this.grille[i][j] = Tetrimino.TypeTetrimino.Vide;
+            }
+        }
+        for (int i =this.TAILLE_LIGNES-1; i > 0; i--) {
+            for (int j = this.TAILLE_COLONNES-1; j > 0; j--) {
+                if (this.grille[i][j] == Tetrimino.TypeTetrimino.Vide) {
+                    grille[i][j] = this.grille[i-1][j];
+                    grille[i-1][j] = Tetrimino.TypeTetrimino.Vide;
+                }
+            }
+        }
+    }
+
+    public void cycle(){
+        if (this.isPause)
+            return;
+        else if (!this.perdu && this.nbrLignesCompletes() == 0) {
+            if(!this.pieceInstantanee.isBloqueBas())
+                this.pieceInstantanee.descendrePiece();
+            else
+                bloquerPiece();
+            for (int i = 0; i < 4; i++) {
+                int x = this.pieceInstantanee.getCoordsTetrimino()[i][0];
+                int y = this.pieceInstantanee.getCoordsTetrimino()[i][1];
+                this.grille[x][y] = this.pieceInstantanee.getType();
+            }
+        } else {
+            if(this.nbrLignesCompletes() != 0)
+                this.descendreGrille(this.nbrLignesCompletes());
+            //else
+                //perdu
+        }
+    }
+
+    public boolean isPieceStockee() {
+        return (this.getPieceStockee().getType()!= null);
+    }
+    public void utiliserPieceStockee() {
+        Tetrimino pivot = new Tetrimino(this.getPieceInstantanee());
+        this.pieceInstantanee.setCoordsTetrimino(this.pieceInstantanee.getCoordsTetrimino());
+        this.setPieceStockee(pivot);
+    }
+
+    public void rotateTetriminoCourant() {
+        for(int i=0;i<4;i++){
+            this.grille[this.pieceInstantanee.getCoordsTetrimino()[i][0]][this.pieceInstantanee.getCoordsTetrimino()[i][1]] = Tetrimino.TypeTetrimino.Vide;
+        }
+        this.pieceInstantanee.rotate();
+    }
+
+
     public Tetrimino getPieceInstantanee() {
         return pieceInstantanee;
+    }
+
+    public void augmenterPoints(int indiceMultiplicateur) {
+
     }
 
     public boolean getPerdu() {
@@ -159,22 +275,7 @@ public class Model {
     public void setGrille(Tetrimino.TypeTetrimino[][] grille) {
         this.grille = grille;
     }
-
-    public boolean isLateralMouvement() {
-        return lateralMouvement;
-    }
-
-    public void setLateralMouvement(boolean lateralMouvement) {
-        this.lateralMouvement = lateralMouvement;
-    }
-
-    public boolean isLateralMouvement2() {
-        return lateralMouvement2;
-    }
-
-    public void setLateralMouvement2(boolean lateralMouvement2) {
-        this.lateralMouvement2 = lateralMouvement2;
-    }
+    
 
     public boolean isPiecePlace() {
         return isPiecePlace;
@@ -183,4 +284,5 @@ public class Model {
     public void setPiecePlace(boolean piecePlace) {
         isPiecePlace = piecePlace;
     }
+
 }
