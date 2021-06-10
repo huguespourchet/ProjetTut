@@ -12,6 +12,10 @@ public class Fenetre extends JFrame {
     private ControlGroup controlGroup;
     private Model model;
 
+
+    /**
+     * Menu
+     */
     private JMenuBar barMenu;
     private JMenu menu1;
     private JMenu menu2;
@@ -20,6 +24,10 @@ public class Fenetre extends JFrame {
     private JMenuItem item3;
     private JMenuItem item4;
 
+
+    /**
+     * Boutons dans l'accueil
+     */
     private JButton jButJouer;
     private JButton jButReseau;
     private JButton jButParam;
@@ -32,17 +40,25 @@ public class Fenetre extends JFrame {
     //partie reseau
     // JTextField
     private JTextField textValider;
-
     // JButton
     private JButton jButValider;
-
     // label to display text
     private JLabel labelValider;
 
-
+    /**
+     * Taille plateau de jeu
+     */
     private static final int intRows = 20;
     private static final int intCols = 10;
 
+
+    /**
+     * Constructeur Fenetre à partir de plateau, controlPlateau et model
+     * @param plateau
+     * @param controlPlateau
+     * @param model
+     * @throws InterruptedException
+     */
     public Fenetre(Plateau plateau, ControlPlateau controlPlateau, Model model) throws InterruptedException {
         this.plateau = plateau;
         this.controlPlateau = controlPlateau;
@@ -51,9 +67,6 @@ public class Fenetre extends JFrame {
         initAttribut();
         changerVersion2();
         setTitle("Tetris1");
-
-
-
         setLocation(200,200);
         setPreferredSize(new Dimension(500,600));
         setResizable(false);
@@ -66,6 +79,11 @@ public class Fenetre extends JFrame {
 
     }
 
+    /**
+     * Permet de changer de fenetre, via les contrôleurs
+     * @param version
+     * @throws Exception
+     */
     public void changerVersion(int version) throws Exception {
 
         initAttribut();
@@ -84,20 +102,27 @@ public class Fenetre extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * Fenetre de JEU
+     * @throws InterruptedException
+     */
     public void changerVersion1() throws InterruptedException {
 
-        //Appel d'un nouveau controller pour pouvoir bouger lors du lancement du jeu
+        //Appel d'un nouveau controlGroup pour pouvoir bouger lors du lancement du jeu
         //après le premier controller créer dans le Menu
-        //BUG: SI COMMENTÉ, LES PIECES NE BOUGENT PAS, MAIS NE CRÉER PAS DE NOUVELLE FENETRE
+        //BUG: SI COMMENTÉ, LES PIECES NE BOUGENT PAS DANS LE JEU, MAIS CELA NE CRÉER PAS DE NOUVELLE FENETRE
         controlGroup = new ControlGroup();
-        //BUG : SI NON COMMENTÉ, NE RECRÉER PAS DE NOUVELLE FENETRE  ; MAIS LES TOUCHES DE DÉPLACEMENT NE SONT PAS PRISE EN COMPTE
+        //BUG : SI NON COMMENTÉ, NE RECRÉER PAS DE NOUVELLE FENETRE  ; MAIS LES TOUCHES DE DÉPLACEMENT DU JEU NE SONT PAS PRISE EN COMPTE
 //        this.model = new Model();
 //        this.controlPlateau = new ControlPlateau(model);
 //        this.plateau = new Plateau(model,controlPlateau);
+        //RESOLUTION : CE BUG VIENT DE CONTROLGROUP OÙ L'ON CRÉER UNE NOUVELLE FENETRE, CELA NE DEVRAIT PAS SE PRODUIRE
+        //MANQUE DE TEMPS POUR RÉSOUDRE CELA...
 
 
-
-        //Menu
+        /**
+         * Menu
+         */
         barMenu = new JMenuBar();
         menu1 = new JMenu("Menu");
         menu2 = new JMenu("Jeu");
@@ -115,7 +140,9 @@ public class Fenetre extends JFrame {
         barMenu.add(menu2);
         setJMenuBar(barMenu);
 
-        //Controle du Menu
+        /**
+         * Contrôle du menu
+         */
         ctrlMenu = new ControlMenu(this);
         item1.addActionListener(ctrlMenu);
         item2.addActionListener(ctrlMenu);
@@ -125,7 +152,9 @@ public class Fenetre extends JFrame {
 
         JPanel panelGlobal = new JPanel(new BorderLayout());
 
-
+        /**
+         * Panel NORD
+         */
         JPanel pano1 = new JPanel();
         pano1.setPreferredSize(new Dimension(100,50));
         pano1.setBackground(new Color(175, 0, 24));
@@ -134,11 +163,16 @@ public class Fenetre extends JFrame {
         pano1.add(labelTitle);
         panelGlobal.add(pano1,BorderLayout.NORTH);
 
+        /**
+         * Panel global GAUCHE
+         */
         JPanel pano2 = new JPanel();
         pano2.setBackground(new Color(175, 0, 24));
         pano2.setLayout(new BoxLayout(pano2, BoxLayout.Y_AXIS));
 
-
+        /**
+         * Sous-panel Gauche n°1
+         */
         JPanel pano2_1 = new JPanel();
         JLabel labelBox = new JLabel("Box");
         pano2_1.add(labelBox);
@@ -146,7 +180,9 @@ public class Fenetre extends JFrame {
         pano2_1.setPreferredSize(new Dimension(100,50));
         pano2_1.setBorder(new LineBorder(Color.black));
 
-
+        /**
+         * Sous-panel Gauche n°2
+         */
         JPanel pano2_2 = new JPanel();
         JLabel labelLevel = new JLabel("Level");
         pano2_2.add(labelLevel);
@@ -158,24 +194,27 @@ public class Fenetre extends JFrame {
         pano2.add(pano2_2);
         panelGlobal.add(pano2, BorderLayout.WEST);
 
+        /**
+         * Panel CENTRAL : PLATEAU DE JEU
+         */
         JPanel pano3 = new JPanel();
         pano3.setLayout(new OverlayLayout(pano3));
         pano3.setPreferredSize(new Dimension(300,300));
-
         pano3.setBorder(new LineBorder(Color.pink));
-
-
-
         pano3.add(this.plateau);
         this.plateau.play(this);
         panelGlobal.add(pano3,BorderLayout.CENTER);
 
-        //coté droit
+        /**
+         * Panel global DROIT
+         */
         JPanel pano4 = new JPanel();
         pano4.setBackground(new Color(175, 0, 24));
         pano4.setLayout(new BoxLayout(pano4, BoxLayout.Y_AXIS));
 
-        //carré Score
+        /**
+         * Sous-panel droit n°1
+         */
         JPanel pano4_1 = new JPanel(new GridLayout(2,1));
         JLabel labelNext = new JLabel("Score");
         labelNext.setHorizontalAlignment(0);
@@ -183,26 +222,22 @@ public class Fenetre extends JFrame {
         pano4_1.setPreferredSize(new Dimension(100,50));
         pano4_1.setBorder(new LineBorder(Color.black));
 
+        /**
+         * Sous sous panel score numérique
+         */
         JPanel pano4_11 = new JPanel();
-
-
         pano4_11.setBorder(new LineBorder(Color.orange));
         pano4_11.setLayout(new OverlayLayout(pano4_11));
-
-        // A METTRE SELON LE TYPE DE PIECE QUI TOMBE !
-
-
-
         scoreLabel.setPreferredSize(new Dimension(50,50));
         pano4_11.add(scoreLabel);
-
         pano4_1.add(pano4_11);
         pano4_1.setPreferredSize(new Dimension(100,50));
         pano4_1.setBorder(new LineBorder(Color.black));
 
 
-
-        //carré Next
+        /**
+         * Sous panel Droit n°2
+         */
         JPanel pano4_2 = new JPanel(new GridLayout(2,1));
         JLabel labelScore = new JLabel("Next");
         labelScore.setHorizontalAlignment(0);
@@ -210,30 +245,32 @@ public class Fenetre extends JFrame {
         pano4_2.setPreferredSize(new Dimension(100,50));
         pano4_2.setBorder(new LineBorder(Color.black));
 
+        /**
+         * Sous sous panel Next Piece Image
+         */
         JPanel pano4_21 = new JPanel();
-
-
         pano4_21.setBorder(new LineBorder(Color.orange));
         pano4_21.setLayout(new OverlayLayout(pano4_21));
-
-        // A METTRE SELON LE TYPE DE PIECE QUI TOMBE !
+        //à mettre selon type qui tombe
         JLabel lab2 = new JLabel(new ImageIcon(listeImages()[2].getImage()));
-
         pano4_21.add(lab2);
-
         pano4_2.add(pano4_21);
         pano4_2.setPreferredSize(new Dimension(100,50));
         pano4_2.setBorder(new LineBorder(Color.black));
 
 
-        //carré Best
+        /**
+         * Sous panel Droit n°3
+         */
         JPanel pano4_3 = new JPanel();
         JLabel labelBest = new JLabel("Best");
         pano4_3.add(labelBest);
         pano4_3.setPreferredSize(new Dimension(100,50));
         pano4_3.setBorder(new LineBorder(Color.black));
 
-
+        /**
+         * Ajout panel global Droit
+         */
         pano4.add(pano4_1);
         pano4.add(Box.createHorizontalStrut(3));
         pano4.add(pano4_2);
@@ -241,7 +278,9 @@ public class Fenetre extends JFrame {
         pano4.add(pano4_3);
         panelGlobal.add(pano4,BorderLayout.EAST);
 
-
+        /**
+         * Panel SUD
+         */
         JPanel pano5 = new JPanel();
         pano5.setPreferredSize(new Dimension(100,50));
         pano5.setBackground(new Color(175, 0, 24));
@@ -249,9 +288,15 @@ public class Fenetre extends JFrame {
 
         setContentPane(panelGlobal);
     }
+
+    /**
+     * Fenetre de l'accueil 
+     */
     public void changerVersion2(){
 
-        //Menu
+        /**
+         * Menu
+         */
         barMenu = new JMenuBar();
         menu1 = new JMenu("Menu");
         menu2 = new JMenu("Jeu");
@@ -269,7 +314,9 @@ public class Fenetre extends JFrame {
         barMenu.add(menu2);
         setJMenuBar(barMenu);
 
-        //Controle du Menu
+        /**
+         * Contrôle du menu 
+         */
         ctrlMenu = new ControlMenu(this);
         item1.addActionListener(ctrlMenu);
         item2.addActionListener(ctrlMenu);
@@ -278,9 +325,11 @@ public class Fenetre extends JFrame {
 
 
         JPanel panelGlobal = new JPanel(new BorderLayout());
+
+        /**
+         * Panel titre NORD
+         */
         JPanel pano1 = new JPanel();
-
-
         pano1.setPreferredSize(new Dimension(100,50));
         pano1.setBackground(new Color(230, 77, 98));
         JLabel labelTitle = new JLabel("▙ TETRIS ▜");
@@ -288,12 +337,16 @@ public class Fenetre extends JFrame {
         pano1.add(labelTitle);
         panelGlobal.add(pano1,BorderLayout.NORTH);
 
-
+        /**
+         * Panel CENTRAL
+         */
         JPanel pano2 = new JPanel();
         pano2.setLayout(new BoxLayout(pano2, BoxLayout.Y_AXIS));
         pano2.setBackground(new Color(230, 77, 98));
 
-
+        /**
+         * Sous panel central "jouer"
+         */
         JPanel pano2_1 = new JPanel();
         pano2_1.setBackground(new Color(175, 0, 24));
         //pano2_1.setBorder(new LineBorder(new Color(230, 77, 98)));
@@ -306,10 +359,13 @@ public class Fenetre extends JFrame {
         jButJouer.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
         pano2_1.add(jButJouer);
 
+        /**
+         * Sous panel central "Réseau"
+         */
         JPanel pano2_2 = new JPanel();
         pano2_2.setBackground(new Color(175, 0, 24));
         //pano2_2.setBorder(new LineBorder(new Color(230, 77, 98)));
-        jButReseau = new JButton("Reseau");
+        jButReseau = new JButton("Réseau");
         jButReseau.setPreferredSize(new Dimension(150,50));
         jButReseau.setBackground(new Color(230, 77, 98));
         jButReseau.setForeground(Color.BLACK);
@@ -318,10 +374,13 @@ public class Fenetre extends JFrame {
         jButReseau.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
         pano2_2.add(jButReseau);
 
+        /**
+         * Sous panel central "Touches"
+         */
         JPanel pano2_3 = new JPanel();
         pano2_3.setBackground(new Color(175, 0, 24));
         //pano2_3.setBorder(new LineBorder(new Color(230, 77, 98)));
-        jButParam = new JButton("Paramètre");
+        jButParam = new JButton("Touches");
         jButParam.setPreferredSize(new Dimension(150,50));
         jButParam.setBackground(new Color(230, 77, 98));
         jButParam.setForeground(Color.BLACK);
@@ -330,6 +389,10 @@ public class Fenetre extends JFrame {
         jButParam.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
         pano2_3.add(jButParam);
 
+
+        /**
+         * Sous panel central "Exit"
+         */
         JPanel pano2_4 = new JPanel();
         pano2_4.setBackground(new Color(175, 0, 24));
         //pano2_4.setBorder(new LineBorder(new Color(230, 77, 98)));
@@ -342,12 +405,19 @@ public class Fenetre extends JFrame {
         jButExit.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
         pano2_4.add(jButExit);
 
+
+        /**
+         * Ajout des listeners pour les contrôleurs
+         */
         ctrlBouton = new ControlBouton(plateau,this);
         jButJouer.addActionListener(ctrlBouton);
         jButReseau.addActionListener(ctrlBouton);
         jButParam.addActionListener(ctrlBouton);
         jButExit.addActionListener(ctrlBouton);
 
+        /**
+         * Ajout des sous panels au panel central global
+         */
         pano2.add(pano2_1);
         pano2.add(pano2_2);
         pano2.add(pano2_3);
@@ -357,9 +427,14 @@ public class Fenetre extends JFrame {
         setContentPane(panelGlobal);
     }
 
+    /**
+     * Fenetre Touches
+     */
     public void changerVersion3(){
 
-        //Menu
+        /**
+         * Menu
+         */
         barMenu = new JMenuBar();
         menu1 = new JMenu("Menu");
         menu2 = new JMenu("Jeu");
@@ -377,7 +452,9 @@ public class Fenetre extends JFrame {
         barMenu.add(menu2);
         setJMenuBar(barMenu);
 
-        //Controle du Menu
+        /**
+         * Contrôle menu
+         */
         ctrlMenu = new ControlMenu(this);
         item1.addActionListener(ctrlMenu);
         item2.addActionListener(ctrlMenu);
@@ -386,8 +463,11 @@ public class Fenetre extends JFrame {
 
 
         JPanel panelGlobal = new JPanel(new BorderLayout());
-        JPanel pano1 = new JPanel();
 
+        /**
+         * Panel Nord
+         */
+        JPanel pano1 = new JPanel();
         pano1.setPreferredSize(new Dimension(100,50));
         pano1.setBackground(new Color(230, 77, 98));
         JLabel labelTitle = new JLabel("▙ TETRIS ▜");
@@ -395,7 +475,9 @@ public class Fenetre extends JFrame {
         pano1.add(labelTitle);
         panelGlobal.add(pano1,BorderLayout.NORTH);
 
-
+        /**
+         * Panel global
+         */
         JPanel pano2 = new JPanel();
         pano2.setLayout(new BoxLayout(pano2, BoxLayout.Y_AXIS));
         pano2.setBackground(new Color(230, 77, 98));
@@ -463,8 +545,9 @@ public class Fenetre extends JFrame {
         pano2_5.add(jButRetour);
 
 
-
-
+        /**
+         * Ajout des listeners pour les contrôleurs
+         */
         ctrlBouton = new ControlBouton(plateau,this);
         jButJouer.addActionListener(ctrlBouton);
         jButReseau.addActionListener(ctrlBouton);
@@ -472,6 +555,9 @@ public class Fenetre extends JFrame {
         jButExit.addActionListener(ctrlBouton);
         jButRetour.addActionListener(ctrlBouton);
 
+        /**
+         * Ajout au panel global
+         */
         pano2.add(pano2_1);
         pano2.add(pano2_2);
         pano2.add(pano2_3);
@@ -481,9 +567,16 @@ public class Fenetre extends JFrame {
         panelGlobal.add(pano2,BorderLayout.CENTER);
         setContentPane(panelGlobal);
     }
+
+    /**
+     * Fenetre consignes et configuration réseau
+     * @throws Exception
+     */
     public void changerVersion4() throws Exception {
 
-        //Menu
+        /**
+         * Menu
+         */
         barMenu = new JMenuBar();
         menu1 = new JMenu("Menu");
         menu2 = new JMenu("Jeu");
@@ -501,7 +594,9 @@ public class Fenetre extends JFrame {
         barMenu.add(menu2);
         setJMenuBar(barMenu);
 
-        //Controle du Menu
+        /**
+         * Contrôle du menu
+         */
         ctrlMenu = new ControlMenu(this);
         item1.addActionListener(ctrlMenu);
         item2.addActionListener(ctrlMenu);
@@ -510,9 +605,11 @@ public class Fenetre extends JFrame {
 
 
         JPanel panelGlobal = new JPanel(new BorderLayout());
+
+        /**
+         * Panel Nord
+         */
         JPanel pano1 = new JPanel();
-
-
         pano1.setPreferredSize(new Dimension(100,50));
         pano1.setBackground(new Color(230, 77, 98));
         JLabel labelTitle = new JLabel("▞ Réseau ▚");
@@ -520,12 +617,16 @@ public class Fenetre extends JFrame {
         pano1.add(labelTitle);
         panelGlobal.add(pano1,BorderLayout.NORTH);
 
-
+        /**
+         * Panel global
+         */
         JPanel pano2 = new JPanel();
         pano2.setLayout(new BoxLayout(pano2, BoxLayout.Y_AXIS));
         pano2.setBackground(new Color(230, 77, 98));
 
-
+        /**
+         * Consignes
+         */
         JPanel pano2_1 = new JPanel();
         pano2_1.setBackground(new Color(175, 0, 24));
         pano2_1.setBorder(new LineBorder(new Color(230, 77, 98)));
@@ -550,6 +651,9 @@ public class Fenetre extends JFrame {
         pano2_1.add(label2_3);
         pano2_1.add(label2_4);
 
+        /**
+         * Configuration serveur
+         */
         JPanel pano2_2 = new JPanel();
         pano2_2.setBackground(new Color(175, 0, 24));
         pano2_2.setBorder(new LineBorder(new Color(230, 77, 98)));
@@ -569,31 +673,21 @@ public class Fenetre extends JFrame {
 
         String nomMachine = JOptionPane.showInputDialog
                 (null, "Nom de la machine hôte ?");
+        //A IMPLÉMENTER
         //setContentPane(new FenetreJoueurClient(joueur));
 //        Socket socket = new Socket(nomMachine, portTetris);
 //        JoueurClient joueur = new JoueurClient(socket);
 
         textValider = new JTextField(16);
-
         textValider.setBackground(new Color(230, 77, 98));
         textValider.setBorder(new LineBorder(Color.BLACK));
         pano2_2.add(labelValider);
         pano2_2.add(textValider);
         pano2_2.add(jButValider);
 
-
-//        JPanel pano2_3 = new JPanel();
-//        pano2_3.setBackground(new Color(175, 0, 24));
-//        pano2_3.setBorder(new LineBorder(new Color(230, 77, 98)));
-//        jButParam = new JButton("Paramètre");
-//        jButParam.setPreferredSize(new Dimension(150,50));
-//        jButParam.setBackground(new Color(230, 77, 98));
-//        jButParam.setForeground(Color.BLACK);
-//        jButParam.setFocusPainted(false);
-//        jButParam.setFont(new Font("Hyeon", Font.BOLD, 20));
-//        jButParam.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
-//        pano2_3.add(jButParam);
-
+        /**
+         * Bouton retour accueil
+         */
         JPanel pano2_4 = new JPanel();
         pano2_4.setBackground(new Color(175, 0, 24));
         pano2_4.setBorder(new LineBorder(new Color(230, 77, 98)));
@@ -653,7 +747,7 @@ public class Fenetre extends JFrame {
 
     }
 
-
+    //A IMPLÉMENTER PAR RAPPORT AU MODÈLE
     public void augmenterScore(){
 //       if(controlPlateau.isLigneComplete())
         //setScoreLabel(String.valueOf(controlPlateau.nbrLignesCompletes()));

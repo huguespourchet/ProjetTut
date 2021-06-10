@@ -6,6 +6,11 @@ public class ControlBouton implements ActionListener{
     Fenetre fenetre;
     Plateau plateau;
 
+    /**
+     * Constructeur à partir du plateau et de la fenetre
+     * @param plateau
+     * @param fenetre
+     */
     public ControlBouton(Plateau plateau, Fenetre fenetre){
         this.fenetre = fenetre;
         this.plateau = plateau;

@@ -5,6 +5,11 @@ public class ControlMenu implements ActionListener {
 
     Fenetre fenetre;
 
+
+    /**
+     * Constructeur ControlMenu à partir de fenetre
+     * @param fenetre
+     */
     public ControlMenu(Fenetre fenetre) { this.fenetre = fenetre; }
 
     public void actionPerformed(ActionEvent e) {

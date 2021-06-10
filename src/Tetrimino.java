@@ -14,6 +14,10 @@ public class Tetrimino {
     private int[][] cooBase;
     private Model model;
 
+    /**
+     * Représentation des pièces avec 4 points en 2 dimensions et leur type (vide, S, Z, I, T, O, L, J)
+     * @param model
+     */
     public Tetrimino(Model model){
         this.tableTetriminos = new int[][][] {
                 { { 0, -1 },  { 0, 0 },   { -1, 0 },  { -1, 1 } },// tetrimino de forme S

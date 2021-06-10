@@ -7,6 +7,11 @@ public class ControlGroup {
     private ControlPlateau controlP;
     private Model model;
 
+
+    /**
+     * Construteur ControlGroup
+     * @throws InterruptedException
+     */
     public ControlGroup() throws InterruptedException {
 
         this.model = new Model();
